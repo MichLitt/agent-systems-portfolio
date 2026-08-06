@@ -1,0 +1,8 @@
+{
+  "rag_ingest": "passed",
+  "agent_retrieval": "passed",
+  "rag_evalops_gate": "promoted",
+  "agent_evalops_gate": "promoted",
+  "persisted_release_decisions": 2,
+  "three_project_closure": "passed"
+}

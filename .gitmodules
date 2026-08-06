@@ -1,0 +1,12 @@
+[submodule "llm-coding-agent-system"]
+	path = llm-coding-agent-system
+	url = https://github.com/MichLitt/llm-coding-agent-system.git
+[submodule "llm-evalops-platform"]
+	path = llm-evalops-platform
+	url = https://github.com/MichLitt/llm-evalops-platform.git
+[submodule "rag-benchmark-system"]
+	path = rag-benchmark-system
+	url = https://github.com/MichLitt/rag-benchmark-system.git
+[submodule "coding-llm-finetune"]
+	path = coding-llm-finetune
+	url = https://github.com/MichLitt/coding-llm-finetune.git

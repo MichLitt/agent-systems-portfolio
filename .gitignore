@@ -1,0 +1,19 @@
+.DS_Store
+**/.DS_Store
+.claude/
+**/.env
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.uv-cache/
+*.pyc
+
+# Local service state and large generated assets
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/checkpoints/
+**/data/indexes/
+
+# Local-only personal material; keep it organized but out of the public repo.
+docs/career/
