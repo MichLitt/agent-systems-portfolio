@@ -2,7 +2,7 @@
   "schema_version": "agent-rag-ablation-config/v1",
   "task_manifest": "experiments/g3-agent-rag-ablation/task-manifest.json",
   "task_manifest_sha256": "eac5bcb0ad5961c91c51775b33919a6d266f9c9c09155fd32629ee527cf762f7",
-  "agent_runtime_commit": "34d8174848c752bbb901bb33af903ee0edcacc8a",
+  "agent_runtime_commit": "5887204e5692dde68c528727170460691269947c",
   "rag_corpus_manifest": "experiments/g3-agent-rag-ablation/rag-corpus-manifest.json",
   "rag_corpus_manifest_sha256": "625b55c3784e7ce10d638dd55bcb86eb4d1a4e5cc4dd56078440b4d8ca821133",
   "seeds": [101, 202, 303],
