@@ -1,0 +1,15 @@
+{
+  "schema_version": "demo-readiness/v1",
+  "one_command_start": true,
+  "seeded_workflow": true,
+  "restart_recovery": true,
+  "review_loop": true,
+  "security_smoke": true,
+  "passed": true,
+  "evidence": {
+    "docker_compose_ci": "https://github.com/MichLitt/agent-systems-portfolio/actions/runs/31574231948",
+    "rag_restart_ci": "https://github.com/MichLitt/rag-benchmark-system/actions/runs/31574638279",
+    "closure_artifact": "artifacts/closure/three-project-closure-latest.json",
+    "notes": "Docker CI built the Agent/RAG/EvalOps Compose stack and completed the offline seed. The RAG restart test reads a queued SQLite job through a fresh API registry before the independent worker completes it."
+  }
+}

@@ -42,7 +42,7 @@ declared demo-ready or evidence-backed. Delivery is governed by explicit Gates:
 |---|---|---|
 | G0 Engineering Closure | Tests and real local Agent/RAG/EvalOps closure | **Ready** |
 | G1 Release Baseline | Child changes merged to `main`, full CI, release tag | **Ready — v0.1.0** |
-| G2 Demo-Ready Product | One-command stack, review UI, recoverable ingestion | Planned — minimum competitive resume threshold |
+| G2 Demo-Ready Product | One-command stack, review UI, recoverable ingestion | **Ready — v0.2.0** |
 | G3 Evidence-Backed Flagship | Controlled Agent baseline/candidate evaluation | Planned — required for quantified improvement claims |
 
 ## Demo Stack
