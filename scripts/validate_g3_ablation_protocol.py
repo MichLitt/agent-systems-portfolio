@@ -41,6 +41,13 @@ def main() -> None:
     expected_hash = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
     if config.get("task_manifest_sha256") != expected_hash:
         fail("run config task manifest hash does not match the frozen manifest")
+    runtime_commit = config.get("agent_runtime_commit")
+    if (
+        not isinstance(runtime_commit, str)
+        or len(runtime_commit) != 40
+        or any(c not in "0123456789abcdef" for c in runtime_commit)
+    ):
+        fail("Agent runtime commit must be a 40-character lowercase SHA")
     seeds = config.get("seeds")
     if not isinstance(seeds, list) or len(seeds) != 3 or len(set(seeds)) != 3:
         fail("exactly three distinct seeds are required")
