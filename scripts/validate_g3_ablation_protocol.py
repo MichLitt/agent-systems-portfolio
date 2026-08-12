@@ -71,6 +71,8 @@ def main() -> None:
         fail("candidate must explicitly enable knowledge retrieval")
     if candidate.get("index_name") != corpus.get("index_name"):
         fail("candidate index must match the frozen corpus manifest")
+    if candidate.get("rag_index_id") != corpus.get("index_name"):
+        fail("candidate fixed RAG index must match the frozen corpus manifest")
     documents = corpus.get("documents")
     if not isinstance(documents, list) or not documents:
         fail("RAG corpus must name at least one document")
