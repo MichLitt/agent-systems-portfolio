@@ -1,0 +1,34 @@
+name: Demo Compose
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout portfolio and pinned projects
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure local-only CI token
+        run: printf 'PORTFOLIO_API_TOKEN=ci-demo-token-not-a-production-secret\n' > .env
+
+      - name: Build and run deterministic demo
+        run: docker compose --profile demo up --build --abort-on-container-exit --exit-code-from demo-seed
+
+      - name: Capture service diagnostics
+        if: always()
+        run: docker compose logs --no-color
+
+      - name: Clean up services and volumes
+        if: always()
+        run: docker compose down -v --remove-orphans
