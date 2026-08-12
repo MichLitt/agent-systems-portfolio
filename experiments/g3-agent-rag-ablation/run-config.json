@@ -10,6 +10,7 @@
   "temperature": 0.2,
   "task_step_budget": "Use each task's max_steps from the pinned tasks.yaml source; the selected task set has a maximum of 20 steps.",
   "terminal_timeout_seconds": 30,
+  "llm_request_timeout_seconds": 180,
   "retry_policy": "Record every attempt. Do not discard failures or rerun only successful tasks.",
   "baseline": {"label": "baseline_no_retrieval", "knowledge_retrieval": false},
   "candidate": {"label": "candidate_rag", "knowledge_retrieval": true, "index_name": "g3-agent-rag-ablation-v1", "rag_index_id": "g3-agent-rag-ablation-v1"},
