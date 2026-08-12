@@ -33,6 +33,27 @@ flowchart LR
 | [`llm-evalops-platform`](./llm-evalops-platform/) | Versioned ingest, normalization worker, run comparison, release gate | Integrated; 45 tests passing |
 | [`coding-llm-finetune`](./coding-llm-finetune/) | Failure-driven SFT/DPO pipeline and clean evaluation | Extension; pipeline prepared, training pending |
 
+## Delivery Status
+
+The integrated engineering baseline is complete, but the portfolio is not yet
+declared demo-ready or evidence-backed. Delivery is governed by explicit Gates:
+
+| Gate | Meaning | Status |
+|---|---|---|
+| G0 Engineering Closure | Tests and real local Agent/RAG/EvalOps closure | **Ready** |
+| G1 Release Baseline | Child changes merged to `main`, full CI, release tag | **Ready — v0.1.0** |
+| G2 Demo-Ready Product | One-command stack, review UI, recoverable ingestion | Planned — minimum competitive resume threshold |
+| G3 Evidence-Backed Flagship | Controlled Agent baseline/candidate evaluation | Planned — required for quantified improvement claims |
+
+See the
+[`competitive portfolio delivery plan`](./docs/plans/competitive-portfolio-delivery-plan.md)
+for the work breakdown, acceptance evidence, and allowed resume claims. Run the
+local readiness assessor at any time:
+
+```bash
+make readiness
+```
+
 ## Quick Verification
 
 Run all three integrated project test suites:
@@ -110,7 +131,9 @@ export EVALOPS_ENDPOINT=http://localhost:8000/v1/ingest/rag/v1
 ## Documentation
 
 - [`AGENTS.md`](./AGENTS.md) — canonical instructions for coding agents working anywhere in this workspace.
+- [`docs/engineering/AGENT_ENGINEERING_STANDARD.md`](./docs/engineering/AGENT_ENGINEERING_STANDARD.md) — normative lifecycle, contract, testing, evidence, security, and PR rules.
 - [`docs/engineering/ENGINEERING_GUIDE.md`](./docs/engineering/ENGINEERING_GUIDE.md) — architecture, contracts, workflows, and release gates.
+- [`docs/plans/competitive-portfolio-delivery-plan.md`](./docs/plans/competitive-portfolio-delivery-plan.md) — active plan from engineering closure to a resume-ready flagship.
 - [`docs/roadmap/portfolio-roadmap.md`](./docs/roadmap/portfolio-roadmap.md) — portfolio strategy and longer-term roadmap.
 - [`docs/plans/three-project-closure-plan.md`](./docs/plans/three-project-closure-plan.md) — implemented integration plan and acceptance evidence.
 - [`docs/README.md`](./docs/README.md) — complete documentation index.

@@ -91,14 +91,20 @@ return HTTP 422 before entering the worker queue.
 
 ## 4. Development Workflow
 
-1. Read root and project `AGENTS.md` files.
-2. Inspect the target project's Git status and current baseline/plan.
-3. Make the smallest coherent change that preserves the shared contracts.
-4. Run targeted tests, then the full owner-project suite.
-5. Run every consumer/producer suite affected by a contract change.
-6. Run `./scripts/run_three_project_closure.sh` for integration changes.
-7. Update README, project reports, plans, and this guide if contracts changed.
-8. Run `git diff --check` and review all worktrees before handoff.
+All work follows
+[`AGENT_ENGINEERING_STANDARD.md`](./AGENT_ENGINEERING_STANDARD.md). The active
+delivery scope and Gate criteria live in
+[`competitive-portfolio-delivery-plan.md`](../plans/competitive-portfolio-delivery-plan.md).
+
+1. Read root/project instructions, the engineering standard, and the active Gate.
+2. Inspect the target project's Git status, Submodule state, current baseline, and evidence.
+3. Define a bounded slice with acceptance criteria, consumers, tests, and rollback.
+4. Make the smallest coherent change that preserves the shared contracts.
+5. Run targeted tests, then the full owner-project suite.
+6. Run every consumer/producer suite affected by a contract change.
+7. Run `./scripts/run_three_project_closure.sh` for integration changes.
+8. Update README, project reports, plans, and this guide if behavior or contracts changed.
+9. Run readiness, `git diff --check`, and review all affected worktrees before handoff.
 
 ## 5. Test and Release Gates
 
@@ -112,7 +118,10 @@ return HTTP 422 before entering the worker queue.
 # True cross-project workflow
 ./scripts/run_three_project_closure.sh
 
-# Both
+# Delivery Gate status (informational unless --require is used)
+./scripts/check_delivery_readiness.py
+
+# All local gates
 make check
 ```
 
@@ -125,6 +134,17 @@ Current verified local gates:
 
 These counts are orientation, not permanent assertions. Test command exit
 status and the current closure artifact are authoritative.
+
+### Delivery Gates
+
+- **G0 Engineering Closure** — capability tests and real local closure.
+- **G1 Release Baseline** — merged main commits, full CI, aligned Submodules, release notes/tag.
+- **G2 Demo-Ready Product** — reproducible stack, recoverable ingestion, review loop, operations/security evidence.
+- **G3 Evidence-Backed Flagship** — controlled baseline/candidate experiment and reproducible quantified evidence.
+
+G2 is the minimum competitive resume threshold. G3 is mandatory for quality
+uplift claims. The readiness script checks machine-verifiable criteria; manual
+criteria remain authoritative in the delivery plan.
 
 ## 6. Baselines and Evidence
 
