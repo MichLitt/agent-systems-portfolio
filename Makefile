@@ -1,4 +1,4 @@
-.PHONY: docs readiness require-release require-demo require-evidence refresh test finetune-smoke closure check check-ablation-protocol
+.PHONY: docs readiness require-release require-demo require-evidence refresh test finetune-smoke closure check check-ablation-protocol build-g3-corpus
 
 docs:
 	python3 scripts/check_workspace_docs.py
@@ -17,6 +17,9 @@ require-evidence:
 
 check-ablation-protocol:
 	python3 scripts/validate_g3_ablation_protocol.py
+
+build-g3-corpus:
+	./scripts/build_g3_rag_corpus.sh
 
 refresh:
 	./scripts/refresh_workspace_after_move.sh

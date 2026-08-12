@@ -1,6 +1,13 @@
 {
   "schema_version": "agent-rag-corpus-manifest/v1",
   "index_name": "g3-agent-rag-ablation-v1",
+  "builder": {
+    "repository": "rag-benchmark-system",
+    "commit": "0f409635938ffc3bb6b8767206187a1530800cf4",
+    "command": "scripts/build_text_index.py",
+    "chunk_size": 256,
+    "overlap": 32
+  },
   "policy": "Index only versioned, task-independent engineering documentation. Do not ingest task prompts, setup files, tests, patches, prior trajectories, or evaluation results.",
-  "documents": ["README.md", "AGENT.md", "docs/engineering/OPERATIONS_RUNBOOK.md", "docs/engineering/THREAT_MODEL.md", "llm-coding-agent-system/README.md", "rag-benchmark-system/README.md", "evalops-platform/README.md"]
+  "documents": ["README.md", "AGENTS.md", "docs/engineering/OPERATIONS_RUNBOOK.md", "docs/engineering/THREAT_MODEL.md", "llm-coding-agent-system/README.md", "rag-benchmark-system/README.md", "llm-evalops-platform/README.md"]
 }
