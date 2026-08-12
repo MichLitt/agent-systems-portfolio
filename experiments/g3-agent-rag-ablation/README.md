@@ -7,7 +7,10 @@ This directory freezes the design of the G3 evidence experiment. It intentionall
 - The fixed task set is the 20-task manifest in `task-manifest.json`.
 - Each condition runs every task for the same three seeds, passing each value as
   `model_seed` to the `glm_5` OpenAI-compatible completion request.
-- The model profile, temperature, step budget, terminal timeout, verification commands, `agent_runtime_commit`, and RAG corpus remain fixed.
+- The model profile, temperature, terminal timeout, verification commands,
+  `agent_runtime_commit`, and RAG corpus remain fixed. Each task's step budget
+  is its `max_steps` from the pinned `tasks.yaml` source (at most 20 steps in
+  this selected set), rather than a new uniform override.
 - `baseline_no_retrieval` forces the Agent not to register `knowledge_retrieval`, even while the RAG service is available for the candidate.
 - `candidate_rag` registers the same tool set plus `knowledge_retrieval` against the named, task-independent index.
 
