@@ -7,6 +7,8 @@ services:
       dockerfile: infra/docker/rag.Dockerfile
     image: portfolio-rag:latest
     command: ["uv", "run", "python", "scripts/start_api.py", "--host", "0.0.0.0", "--port", "8080", "--data-dir", "/data/indexes"]
+    environment:
+      RAG_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
     volumes:
       - rag-data:/data/indexes
     ports: ["8080:8080"]
@@ -35,6 +37,7 @@ services:
       DATABASE_URL: /data/evalops.db
       API_HOST: 0.0.0.0
       API_PORT: "8000"
+      EVALOPS_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
     volumes:
       - evalops-data:/data
     ports: ["8000:8000"]
@@ -53,6 +56,7 @@ services:
     environment:
       DATABASE_URL: /data/evalops.db
       WORKER_POLL_INTERVAL_SECS: "1"
+      EVALOPS_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
     volumes:
       - evalops-data:/data
 
@@ -64,6 +68,9 @@ services:
     environment:
       RAG_API_URL: http://rag:8080
       EVALOPS_ENDPOINT: http://evalops-api:8000/v1/ingest/agent/v1
+      RAG_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
+      EVALOPS_API_KEY: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
+      AGENT_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
       CODER_WORKSPACE: /workspace
       CODER_RUN_STATE_ENABLED: "true"
     volumes:
@@ -98,6 +105,7 @@ services:
     environment:
       RAG_URL: http://rag:8080
       EVALOPS_URL: http://evalops-api:8000
+      PORTFOLIO_API_TOKEN: ${PORTFOLIO_API_TOKEN:?set PORTFOLIO_API_TOKEN in .env}
 
 volumes:
   rag-data:

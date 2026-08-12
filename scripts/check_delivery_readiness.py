@@ -102,6 +102,8 @@ def check_engineering() -> GateResult:
         result.failures.append("RAG EvalOps gate is not promoted")
     if closure and closure.get("agent_evalops_gate") != "promoted":
         result.failures.append("Agent EvalOps gate is not promoted")
+    if closure and closure.get("security_smoke") != "passed":
+        result.failures.append("cross-service token security smoke did not pass")
     return result
 
 

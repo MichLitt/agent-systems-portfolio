@@ -51,6 +51,7 @@ With Docker Desktop installed, start the four-service demonstration and its
 offline seed data with:
 
 ```bash
+cp .env.example .env  # choose a unique PORTFOLIO_API_TOKEN
 docker compose --profile demo up --build
 ```
 
