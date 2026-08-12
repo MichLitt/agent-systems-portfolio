@@ -38,6 +38,6 @@ make run-g3-ablation ARM=baseline SEED=101
 make run-g3-ablation ARM=candidate SEED=101
 ```
 
-The runner creates one Agent process per task and records a suite checkpoint after every task. Its five-minute outer task limit is independent of SDK streaming behavior: a timeout is recorded as `external_task_timeout`, not retried or discarded. Candidate runs require `RAG_API_URL` and `RAG_API_TOKEN`; the fixed-index policy overrides any index identifier supplied by the model. Repeat for all three frozen seed values.
+The runner creates one Agent process per task and records a suite checkpoint after every task. Its five-minute outer task limit is independent of SDK streaming behavior: a timeout is recorded as `external_task_timeout`, not retried or discarded. Candidate runs require `RAG_API_URL` and `RAG_API_TOKEN`; the runner verifies `RAG_API_URL/v1/health` before making a model call. The fixed-index policy overrides any index identifier supplied by the model. Repeat for all three frozen seed values.
 
 Before publishing, export raw run identifiers and recomputed metrics to `artifacts/evidence/agent-rag-ablation-latest.json`, write `docs/reports/agent-rag-ablation-v1.md`, create the EvalOps comparison and gate, then run `make require-evidence`. A rejected or neutral result remains valid evidence and must be recorded as such; it cannot be presented as an improvement.

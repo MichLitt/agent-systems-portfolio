@@ -11,10 +11,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import subprocess
 import time
 from typing import Any
+import urllib.error
+import urllib.request
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +50,19 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def require_rag_service() -> None:
+    """Fail candidate execution before any paid model call if RAG is unavailable."""
+    base_url = os.environ.get("RAG_API_URL", "").rstrip("/")
+    if not base_url:
+        raise SystemExit("candidate runs require RAG_API_URL")
+    try:
+        with urllib.request.urlopen(f"{base_url}/v1/health", timeout=5) as response:
+            if response.status != 200:
+                raise OSError(f"unexpected status {response.status}")
+    except (OSError, urllib.error.URLError) as exc:
+        raise SystemExit(f"candidate RAG preflight failed for {base_url}: {exc}") from exc
+
+
 def main() -> int:
     args = parse_args()
     if args.task_timeout_seconds < 1:
@@ -60,6 +76,8 @@ def main() -> int:
         raise SystemExit("invalid frozen task manifest")
     if args.seed not in config.get("seeds", []):
         raise SystemExit(f"seed {args.seed} is not in the frozen run configuration")
+    if args.arm == "candidate":
+        require_rag_service()
 
     arm_config = config[args.arm]
     run_label = f"g3_{args.arm}_seed{args.seed}"
