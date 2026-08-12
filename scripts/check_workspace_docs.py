@@ -28,6 +28,15 @@ def managed_markdown() -> list[Path]:
 
 def main() -> int:
     errors: list[str] = []
+    required_engineering_docs = (
+        ROOT / "docs" / "engineering" / "AGENT_ENGINEERING_STANDARD.md",
+        ROOT / "docs" / "engineering" / "ENGINEERING_GUIDE.md",
+        ROOT / "docs" / "plans" / "competitive-portfolio-delivery-plan.md",
+    )
+    for required in required_engineering_docs:
+        if not required.is_file():
+            errors.append(f"missing required engineering document: {required.relative_to(ROOT)}")
+
     root_markdown = {path.name for path in ROOT.glob("*.md")}
     expected_root = {"README.md", "AGENTS.md"}
     if root_markdown != expected_root:

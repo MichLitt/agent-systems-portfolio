@@ -10,9 +10,11 @@ the same instructions there.
 Before changing code, read:
 
 1. `README.md` for the workspace map and current status.
-2. `docs/engineering/ENGINEERING_GUIDE.md` for shared architecture and API contracts.
-3. The target project's `AGENTS.md` for local commands, invariants, and report rules.
-4. Any active plan or baseline document named by the project instructions.
+2. `docs/engineering/AGENT_ENGINEERING_STANDARD.md` for the normative work lifecycle, evidence, security, Git, and completion rules.
+3. `docs/plans/competitive-portfolio-delivery-plan.md` for the active delivery Gate and acceptance criteria.
+4. `docs/engineering/ENGINEERING_GUIDE.md` for shared architecture and API contracts.
+5. The target project's `AGENTS.md` for local commands, invariants, and report rules.
+6. Any active baseline, migration, contract, or report named by those instructions.
 
 ## Project Map
 
@@ -32,11 +34,25 @@ and must not be represented as completed while its README results remain TBD.
 - Finetune CLI smoke: `./scripts/check_finetune_project.sh`
 - Cross-project HTTP closure: `./scripts/run_three_project_closure.sh`
 - Documentation/layout gate: `python3 scripts/check_workspace_docs.py`
+- Delivery readiness report: `python3 scripts/check_delivery_readiness.py`
 - All workspace gates: `make check`
 - Documentation index: `docs/README.md`
 
 Run project-local commands from that project's directory. Do not assume one
 project's virtual environment contains another project's dependencies.
+
+## Delivery Gate Discipline
+
+- G0 proves the integrated capability works locally.
+- G1 requires merged child `main` commits, CI, aligned Submodule pointers, release notes, and a tag.
+- G2 is the minimum competitive resume threshold and requires one-command demo, review loop, recoverable ingestion, operations documentation, and security smoke evidence.
+- G3 is required before writing quantified quality-improvement claims; it requires a controlled baseline/candidate experiment and reproducible evidence artifact.
+- G4 Finetune is optional and must not block the Agent platform from reaching G2/G3.
+
+Run `make readiness` when planning and before handoff. Use the strict
+`make require-release`, `make require-demo`, or `make require-evidence` targets
+only when claiming that Gate. A local feature, Draft PR, or passing unit suite
+does not by itself advance a delivery Gate.
 
 ## Cross-Project Contracts
 
@@ -106,9 +122,11 @@ After moving a document, update every reference with `rg` before closing the tas
 
 ## Completion Checklist
 
+- The task follows `AGENT_ENGINEERING_STANDARD.md` and names its owning project and delivery Gate impact.
 - Code, schemas, docs, and examples agree.
 - Required project suites pass.
 - Cross-project closure passes when an integration boundary changed.
 - Generated evidence points to the current layout.
+- README/plan status is not ahead of the available artifact and merged branch state.
 - `git diff --check` passes in each affected repository.
 - Remaining external or paid validation is explicitly separated from completed local work.

@@ -1,7 +1,19 @@
-.PHONY: docs refresh test finetune-smoke closure check
+.PHONY: docs readiness require-release require-demo require-evidence refresh test finetune-smoke closure check
 
 docs:
 	python3 scripts/check_workspace_docs.py
+
+readiness:
+	python3 scripts/check_delivery_readiness.py
+
+require-release:
+	python3 scripts/check_delivery_readiness.py --require release
+
+require-demo:
+	python3 scripts/check_delivery_readiness.py --require demo
+
+require-evidence:
+	python3 scripts/check_delivery_readiness.py --require evidence
 
 refresh:
 	./scripts/refresh_workspace_after_move.sh
@@ -15,4 +27,4 @@ finetune-smoke:
 closure:
 	./scripts/run_three_project_closure.sh
 
-check: docs test finetune-smoke closure
+check: docs readiness test finetune-smoke closure
