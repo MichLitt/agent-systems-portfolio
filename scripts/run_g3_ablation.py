@@ -13,7 +13,6 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-import sys
 import time
 from typing import Any
 
@@ -21,6 +20,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 EXPERIMENT = ROOT / "experiments" / "g3-agent-rag-ablation"
 AGENT_ROOT = ROOT / "llm-coding-agent-system"
+AGENT_PYTHON = AGENT_ROOT / ".venv" / "bin" / "python"
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,6 +51,8 @@ def main() -> int:
     args = parse_args()
     if args.task_timeout_seconds < 1:
         raise SystemExit("--task-timeout-seconds must be positive")
+    if not AGENT_PYTHON.is_file():
+        raise SystemExit(f"Agent virtual environment is missing: {AGENT_PYTHON}")
     manifest = load_json(EXPERIMENT / "task-manifest.json")
     config = load_json(EXPERIMENT / "run-config.json")
     tasks = manifest.get("task_ids")
@@ -91,7 +93,7 @@ def main() -> int:
         task_label = f"{run_label}__{task_id}"
         experiment_config = checkpoint["experiment_config"]
         command = [
-            sys.executable, "-m", "coder_agent", "eval", "--benchmark", "custom",
+            str(AGENT_PYTHON), "-m", "coder_agent", "eval", "--benchmark", "custom",
             "--preset", args.agent_preset, "--config-label", task_label,
             "--llm-profile", str(config["llm_profile"]), "--output", str(task_dir),
             "--task-id", task_id, "--experiment-config", json.dumps(experiment_config, separators=(",", ":")),
