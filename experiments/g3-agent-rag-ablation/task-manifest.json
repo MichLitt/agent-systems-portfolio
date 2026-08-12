@@ -1,0 +1,16 @@
+{
+  "schema_version": "agent-rag-task-manifest/v1",
+  "benchmark": "custom",
+  "source": {
+    "repository": "llm-coding-agent-system",
+    "commit": "a48e67216f8100ce2759ecf755cf5378badbaf4f",
+    "task_file": "coder_agent/eval/benchmarks/custom/tasks.yaml"
+  },
+  "selection_rule": "The 10 v8 multi-file tasks plus the 10 v0.4.3 medium SE tasks. Task instructions and verification files are not indexed into RAG.",
+  "task_ids": [
+    "custom_v8_001", "custom_v8_002", "custom_v8_003", "custom_v8_004", "custom_v8_005",
+    "custom_v8_006", "custom_v8_007", "custom_v8_008", "custom_v8_009", "custom_v8_010",
+    "custom_medium_006", "custom_medium_007", "custom_medium_008", "custom_medium_009", "custom_medium_010",
+    "custom_medium_011", "custom_medium_012", "custom_medium_013", "custom_medium_014", "custom_medium_015"
+  ]
+}
