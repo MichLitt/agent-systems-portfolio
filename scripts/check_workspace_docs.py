@@ -32,6 +32,7 @@ def main() -> int:
         ROOT / "docs" / "engineering" / "AGENT_ENGINEERING_STANDARD.md",
         ROOT / "docs" / "engineering" / "ENGINEERING_GUIDE.md",
         ROOT / "docs" / "engineering" / "OPERATIONS_RUNBOOK.md",
+        ROOT / "docs" / "engineering" / "THREAT_MODEL.md",
         ROOT / "docs" / "plans" / "competitive-portfolio-delivery-plan.md",
     )
     for required in required_engineering_docs:

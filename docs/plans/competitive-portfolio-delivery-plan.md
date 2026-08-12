@@ -117,7 +117,7 @@ docker compose up
 #### G2.4 基础安全与演示证据
 
 - 已完成：Agent、RAG 与 EvalOps 的业务 API 支持环境变量 token；health endpoint 保持给编排探针使用；跨项目闭环验证未携带 token 会被拒绝、携带 token 才能完成业务路径。
-- Agent shell/workspace 边界形成简短 threat model。
+- 已完成：Agent shell/workspace、RAG ingestion、EvalOps evidence 的边界、已有缓解措施与残余风险已记录在 threat model。
 - 生成 `artifacts/delivery/demo-readiness.json`，至少包含：
 
 ```json
