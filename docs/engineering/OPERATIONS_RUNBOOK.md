@@ -5,6 +5,7 @@
 Install Docker Desktop, then from the portfolio root run:
 
 ```bash
+cp .env.example .env  # replace PORTFOLIO_API_TOKEN with a local secret
 docker compose --profile demo up --build
 ```
 
@@ -29,5 +30,6 @@ If an ingestion is stuck in `processing`, restart `rag-worker`; its expired leas
 ## Security boundaries
 
 - Keep API keys in local environment files or your deployment secret store; never commit them.
+- `PORTFOLIO_API_TOKEN` is required by Compose and is sent as a Bearer token to every business API; health checks remain unauthenticated.
 - The demo workspace is mounted read-only. Use a disposable, explicitly mounted workspace for real Agent code changes.
 - The RAG API accepts PDFs only and enforces upload, chunking and storage-quota limits.

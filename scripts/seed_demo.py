@@ -11,12 +11,15 @@ from fpdf import FPDF
 
 RAG_URL = os.environ.get("RAG_URL", "http://localhost:8080")
 EVALOPS_URL = os.environ.get("EVALOPS_URL", "http://localhost:8000")
+API_TOKEN = os.environ.get("PORTFOLIO_API_TOKEN", "")
 
 
 def request(path: str, *, body: bytes | None = None, content_type: str = "application/json") -> dict:
     req = urllib.request.Request(EVALOPS_URL + path, data=body, method="POST" if body else "GET")
     if body:
         req.add_header("Content-Type", content_type)
+    if API_TOKEN:
+        req.add_header("Authorization", f"Bearer {API_TOKEN}")
     with urllib.request.urlopen(req, timeout=15) as response:
         import json
         return json.loads(response.read())
@@ -39,11 +42,16 @@ def main() -> None:
     ).encode() + make_pdf() + f"\r\n--{boundary}--\r\n".encode()
     req = urllib.request.Request(RAG_URL + "/v1/ingest", data=payload, method="POST")
     req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
+    if API_TOKEN:
+        req.add_header("Authorization", f"Bearer {API_TOKEN}")
     with urllib.request.urlopen(req, timeout=30) as response:
         import json
         job_id = json.loads(response.read())["job_id"]
     for _ in range(100):
-        with urllib.request.urlopen(RAG_URL + f"/v1/ingest/{job_id}", timeout=5) as response:
+        poll_request = urllib.request.Request(RAG_URL + f"/v1/ingest/{job_id}")
+        if API_TOKEN:
+            poll_request.add_header("Authorization", f"Bearer {API_TOKEN}")
+        with urllib.request.urlopen(poll_request, timeout=5) as response:
             import json
             if json.loads(response.read())["status"] == "completed":
                 break

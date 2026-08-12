@@ -145,6 +145,7 @@ def run(output_path: Path) -> dict[str, Any]:
         evalops_url = f"http://127.0.0.1:{evalops_port}"
         rag_url = f"http://127.0.0.1:{rag_port}"
         database_path = tmp / "evalops.db"
+        api_token = "closure-token"
 
         evalops_env = os.environ.copy()
         evalops_env.update(
@@ -154,6 +155,7 @@ def run(output_path: Path) -> dict[str, Any]:
                 "API_HOST": "127.0.0.1",
                 "API_PORT": str(evalops_port),
                 "WORKER_POLL_INTERVAL_SECS": "1",
+                "EVALOPS_API_TOKEN": api_token,
             }
         )
 
@@ -188,6 +190,8 @@ def run(output_path: Path) -> dict[str, Any]:
 
         rag_python = str(RAG_ROOT / ".venv/bin/python")
         rag_data_dir = tmp / "data/indexes"
+        rag_env = os.environ.copy()
+        rag_env["RAG_API_TOKEN"] = api_token
         rag_api = start(
             "rag-api",
             [
@@ -203,7 +207,7 @@ def run(output_path: Path) -> dict[str, Any]:
                 "warning",
             ],
             cwd=tmp,
-            env=os.environ.copy(),
+            env=rag_env,
         )
         start(
             "rag-ingest-worker",
@@ -216,13 +220,19 @@ def run(output_path: Path) -> dict[str, Any]:
                 "0.05",
             ],
             cwd=tmp,
-            env=os.environ.copy(),
+            env=rag_env,
         )
 
         try:
-            with httpx.Client(timeout=10.0) as client:
+            with httpx.Client(timeout=10.0, headers={"Authorization": f"Bearer {api_token}"}) as client:
                 _wait_for_health(client, f"{evalops_url}/health", evalops_api)
                 _wait_for_health(client, f"{rag_url}/v1/health", rag_api)
+
+                with httpx.Client(timeout=10.0) as anonymous:
+                    if anonymous.get(f"{evalops_url}/v1/runs").status_code != 401:
+                        raise AssertionError("EvalOps API accepted an unauthenticated request")
+                    if anonymous.post(f"{rag_url}/v1/retrieve", json={}).status_code != 401:
+                        raise AssertionError("RAG API accepted an unauthenticated request")
 
                 pdf_path = tmp / "closure.pdf"
                 _make_pdf(pdf_path)
@@ -249,7 +259,7 @@ def run(output_path: Path) -> dict[str, Any]:
                     raise RuntimeError(f"RAG ingest did not complete: {job}")
 
                 tool_output = asyncio.run(
-                    KnowledgeRetrievalTool(base_url=rag_url).execute(
+                    KnowledgeRetrievalTool(base_url=rag_url, api_token=api_token).execute(
                         query="When is a candidate promoted?",
                         index_id="closure",
                         top_k=3,
@@ -282,8 +292,8 @@ def run(output_path: Path) -> dict[str, Any]:
                         "hallucination_rate": 0.05,
                     }
                 )
-                RagEvalOpsClient(endpoint=rag_endpoint)._do_submit(rag_baseline)
-                RagEvalOpsClient(endpoint=rag_endpoint)._do_submit(rag_candidate)
+                RagEvalOpsClient(endpoint=rag_endpoint, api_key=api_token)._do_submit(rag_baseline)
+                RagEvalOpsClient(endpoint=rag_endpoint, api_key=api_token)._do_submit(rag_candidate)
 
                 agent_endpoint = f"{evalops_url}/v1/ingest/agent/v1"
                 agent_baseline = AgentRunReport(
@@ -310,8 +320,8 @@ def run(output_path: Path) -> dict[str, Any]:
                         "wall_duration_ms": 1300,
                     }
                 )
-                AgentEvalOpsClient(endpoint=agent_endpoint)._do_submit(agent_baseline)
-                AgentEvalOpsClient(endpoint=agent_endpoint)._do_submit(agent_candidate)
+                AgentEvalOpsClient(endpoint=agent_endpoint, api_key=api_token)._do_submit(agent_baseline)
+                AgentEvalOpsClient(endpoint=agent_endpoint, api_key=api_token)._do_submit(agent_candidate)
 
                 for app_type, run_id in [
                     ("rag", rag_baseline.run_id),
@@ -366,6 +376,7 @@ def run(output_path: Path) -> dict[str, Any]:
                     "agent_retrieval": "passed",
                     "rag_evalops_gate": rag_gate["decision"],
                     "agent_evalops_gate": agent_gate["decision"],
+                    "security_smoke": "passed",
                     "persisted_release_decisions": persisted_decisions,
                     "three_project_closure": "passed",
                 }
