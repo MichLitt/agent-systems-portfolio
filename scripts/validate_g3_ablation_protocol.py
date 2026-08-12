@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,18 @@ def main() -> None:
         or any(c not in "0123456789abcdef" for c in runtime_commit)
     ):
         fail("Agent runtime commit must be a 40-character lowercase SHA")
+    agent_root = ROOT / "llm-coding-agent-system"
+    resolved = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=agent_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if resolved.returncode != 0:
+        fail("cannot resolve the Agent runtime commit")
+    if resolved.stdout.strip() != runtime_commit:
+        fail("Agent checkout does not match the frozen runtime commit")
     seeds = config.get("seeds")
     if not isinstance(seeds, list) or len(seeds) != 3 or len(set(seeds)) != 3:
         fail("exactly three distinct seeds are required")
