@@ -1,0 +1,15 @@
+{
+  "schema_version": "agent-rag-ablation-config/v1",
+  "task_manifest": "experiments/g3-agent-rag-ablation/task-manifest.json",
+  "task_manifest_sha256": "eac5bcb0ad5961c91c51775b33919a6d266f9c9c09155fd32629ee527cf762f7",
+  "rag_corpus_manifest": "experiments/g3-agent-rag-ablation/rag-corpus-manifest.json",
+  "seeds": [101, 202, 303],
+  "llm_profile": "glm_5",
+  "temperature": 0.2,
+  "max_steps": 20,
+  "terminal_timeout_seconds": 30,
+  "retry_policy": "Record every attempt. Do not discard failures or rerun only successful tasks.",
+  "baseline": {"label": "baseline_no_retrieval", "knowledge_retrieval": false},
+  "candidate": {"label": "candidate_rag", "knowledge_retrieval": true, "index_name": "g3-agent-rag-ablation-v1"},
+  "required_metrics": ["verification_pass_rate", "tool_success_rate", "tool_retry_rate", "retrieval_hit_rate", "citation_correctness_rate", "wall_latency_p50_ms", "wall_latency_p95_ms", "token_usage", "estimated_cost", "failure_taxonomy"]
+}

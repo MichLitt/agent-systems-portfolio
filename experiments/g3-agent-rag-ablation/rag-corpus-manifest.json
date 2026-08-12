@@ -1,0 +1,6 @@
+{
+  "schema_version": "agent-rag-corpus-manifest/v1",
+  "index_name": "g3-agent-rag-ablation-v1",
+  "policy": "Index only versioned, task-independent engineering documentation. Do not ingest task prompts, setup files, tests, patches, prior trajectories, or evaluation results.",
+  "documents": ["README.md", "AGENT.md", "docs/engineering/OPERATIONS_RUNBOOK.md", "docs/engineering/THREAT_MODEL.md", "llm-coding-agent-system/README.md", "rag-benchmark-system/README.md", "evalops-platform/README.md"]
+}
