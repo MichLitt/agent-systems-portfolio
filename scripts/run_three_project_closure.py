@@ -187,6 +187,7 @@ def run(output_path: Path) -> dict[str, Any]:
         )
 
         rag_python = str(RAG_ROOT / ".venv/bin/python")
+        rag_data_dir = tmp / "data/indexes"
         rag_api = start(
             "rag-api",
             [
@@ -197,9 +198,22 @@ def run(output_path: Path) -> dict[str, Any]:
                 "--port",
                 str(rag_port),
                 "--data-dir",
-                str(tmp / "data/indexes"),
+                str(rag_data_dir),
                 "--log-level",
                 "warning",
+            ],
+            cwd=tmp,
+            env=os.environ.copy(),
+        )
+        start(
+            "rag-ingest-worker",
+            [
+                rag_python,
+                str(RAG_ROOT / "scripts/start_ingest_worker.py"),
+                "--data-dir",
+                str(rag_data_dir),
+                "--poll-seconds",
+                "0.05",
             ],
             cwd=tmp,
             env=os.environ.copy(),

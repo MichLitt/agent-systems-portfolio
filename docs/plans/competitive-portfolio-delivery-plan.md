@@ -2,7 +2,7 @@
 
 更新时间：2026-08-12
 
-当前阶段：**G1 Release Baseline 已完成（v0.1.0）；G2 Demo-Ready Product 待启动**
+当前阶段：**G1 Release Baseline 已完成（v0.1.0）；G2 Demo-Ready Product 进行中**
 
 竞争力门槛：**G2 Demo-Ready Product**
 
@@ -43,7 +43,7 @@ Finetune 是可选研究扩展，不阻塞核心 Agent 平台达到 G2/G3。
 |---|---|---|---|
 | G0 Engineering Closure | 三核心项目测试和真实 HTTP 闭环通过 | 可描述“built/integrated”，不可称 production-ready | **Ready** |
 | G1 Release Baseline | 改动进入各自 `main`；全仓 CI；Submodule 固定 main；release tag/notes | 可作为公开工程项目列出 | **Ready** |
-| G2 Demo-Ready Product | 一键启动；seeded demo；EvalOps review loop；RAG job 可恢复；基础安全与运行手册 | **达到有竞争力项目的最低门槛** | **Planned** |
+| G2 Demo-Ready Product | 一键启动；seeded demo；EvalOps review loop；RAG job 可恢复；基础安全与运行手册 | **达到有竞争力项目的最低门槛** | **In progress** |
 | G3 Evidence-Backed Flagship | 固定任务集上完成 Agent baseline vs RAG candidate；质量/成本/延迟可比较；gate 和报告可复现 | 可写量化提升、作为旗舰项目展开 | **Planned** |
 | G4 Post-Training Extension | 数据、污染报告、baseline、SFT/DPO 和 `finetune/v1` 全部有 artifact | 可增加模型训练亮点，不阻塞主线 | Optional |
 
@@ -115,11 +115,7 @@ docker compose up
 
 #### G2.3 RAG Ingestion Reliability
 
-- 用持久化 job 表替代进程内 `_jobs`。
-- ingestion worker 与 API 进程分离，实现 claim/lease/retry/reclaim。
-- 增加 upload size、content type、chunk 参数、磁盘配额校验。
-- 相同文件 hash + ingestion config 支持幂等。
-- 覆盖 worker crash、API restart、重复提交和失败重试测试。
+- 已完成：SQLite job 表、独立 worker、claim/lease/retry/reclaim、上传与参数校验、文件 hash 幂等，以及相应 API 重启/worker crash/重复提交/失败重试测试。
 
 #### G2.4 基础安全与演示证据
 
