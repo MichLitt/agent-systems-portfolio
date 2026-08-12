@@ -1,0 +1,105 @@
+name: agent-systems-portfolio
+
+services:
+  rag:
+    build:
+      context: .
+      dockerfile: infra/docker/rag.Dockerfile
+    image: portfolio-rag:latest
+    command: ["uv", "run", "python", "scripts/start_api.py", "--host", "0.0.0.0", "--port", "8080", "--data-dir", "/data/indexes"]
+    volumes:
+      - rag-data:/data/indexes
+    ports: ["8080:8080"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/v1/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  rag-worker:
+    image: portfolio-rag:latest
+    depends_on:
+      rag:
+        condition: service_healthy
+    command: ["uv", "run", "python", "scripts/start_ingest_worker.py", "--data-dir", "/data/indexes", "--poll-seconds", "0.2"]
+    volumes:
+      - rag-data:/data/indexes
+
+  evalops-api:
+    build:
+      context: .
+      dockerfile: infra/docker/evalops.Dockerfile
+    image: portfolio-evalops:latest
+    command: ["uv", "run", "python", "scripts/start_api.py"]
+    environment:
+      DATABASE_URL: /data/evalops.db
+      API_HOST: 0.0.0.0
+      API_PORT: "8000"
+    volumes:
+      - evalops-data:/data
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  evalops-worker:
+    image: portfolio-evalops:latest
+    depends_on:
+      evalops-api:
+        condition: service_healthy
+    command: ["uv", "run", "python", "scripts/start_worker.py"]
+    environment:
+      DATABASE_URL: /data/evalops.db
+      WORKER_POLL_INTERVAL_SECS: "1"
+    volumes:
+      - evalops-data:/data
+
+  agent:
+    build:
+      context: .
+      dockerfile: infra/docker/agent.Dockerfile
+    image: portfolio-agent:latest
+    environment:
+      RAG_API_URL: http://rag:8080
+      EVALOPS_ENDPOINT: http://evalops-api:8000/v1/ingest/agent/v1
+      CODER_WORKSPACE: /workspace
+      CODER_RUN_STATE_ENABLED: "true"
+    volumes:
+      - agent-data:/app/memory
+      - ./demo-workspace:/workspace:ro
+    ports: ["8765:8765"]
+    depends_on:
+      rag:
+        condition: service_healthy
+      evalops-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  demo-seed:
+    build:
+      context: .
+      dockerfile: infra/docker/demo.Dockerfile
+    profiles: ["demo"]
+    depends_on:
+      rag:
+        condition: service_healthy
+      evalops-api:
+        condition: service_healthy
+      evalops-worker:
+        condition: service_started
+      rag-worker:
+        condition: service_started
+    environment:
+      RAG_URL: http://rag:8080
+      EVALOPS_URL: http://evalops-api:8000
+
+volumes:
+  rag-data:
+  evalops-data:
+  agent-data:

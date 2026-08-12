@@ -1,0 +1,9 @@
+.git
+.claude
+**/.env
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.uv-cache
+artifacts
+docs/career
