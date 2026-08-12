@@ -16,6 +16,17 @@ def fail(message: str) -> None:
     print(f"G3 protocol: BLOCKED — {message}")
     raise SystemExit(1)
 
+
+def git_head(path: Path) -> str | None:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
+
 def read_json(name: str) -> tuple[Path, dict]:
     path = EXPERIMENT / name
     try:
@@ -28,7 +39,7 @@ def read_json(name: str) -> tuple[Path, dict]:
 
 def main() -> None:
     manifest_path, manifest = read_json("task-manifest.json")
-    _, corpus = read_json("rag-corpus-manifest.json")
+    corpus_path, corpus = read_json("rag-corpus-manifest.json")
     _, config = read_json("run-config.json")
     task_ids = manifest.get("task_ids")
     if not isinstance(task_ids, list) or not 20 <= len(task_ids) <= 30:
@@ -42,6 +53,9 @@ def main() -> None:
     expected_hash = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
     if config.get("task_manifest_sha256") != expected_hash:
         fail("run config task manifest hash does not match the frozen manifest")
+    expected_corpus_hash = hashlib.sha256(corpus_path.read_bytes()).hexdigest()
+    if config.get("rag_corpus_manifest_sha256") != expected_corpus_hash:
+        fail("run config corpus manifest hash does not match the frozen corpus")
     runtime_commit = config.get("agent_runtime_commit")
     if (
         not isinstance(runtime_commit, str)
@@ -50,16 +64,10 @@ def main() -> None:
     ):
         fail("Agent runtime commit must be a 40-character lowercase SHA")
     agent_root = ROOT / "llm-coding-agent-system"
-    resolved = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=agent_root,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    if resolved.returncode != 0:
+    resolved = git_head(agent_root)
+    if resolved is None:
         fail("cannot resolve the Agent runtime commit")
-    if resolved.stdout.strip() != runtime_commit:
+    if resolved != runtime_commit:
         fail("Agent checkout does not match the frozen runtime commit")
     seeds = config.get("seeds")
     if not isinstance(seeds, list) or len(seeds) != 3 or len(set(seeds)) != 3:
@@ -79,6 +87,17 @@ def main() -> None:
     prohibited = ("task", "test", "trajectory", "result", "artifact", "patch")
     if any(any(token in str(doc).lower() for token in prohibited) for doc in documents):
         fail("RAG corpus manifest contains a potentially task-leaking document")
+    for document in documents:
+        path = (ROOT / str(document)).resolve()
+        if ROOT not in path.parents or not path.is_file():
+            fail(f"RAG corpus document is missing or outside the workspace: {document}")
+    builder = corpus.get("builder")
+    if not isinstance(builder, dict):
+        fail("RAG corpus builder metadata is required")
+    if builder.get("repository") != "rag-benchmark-system":
+        fail("RAG corpus builder must name rag-benchmark-system")
+    if builder.get("commit") != git_head(ROOT / "rag-benchmark-system"):
+        fail("RAG checkout does not match the frozen corpus builder commit")
     print(f"G3 protocol: READY — {len(task_ids)} tasks, {len(seeds)} seeds, manifest sha256={expected_hash}")
 
 if __name__ == "__main__":

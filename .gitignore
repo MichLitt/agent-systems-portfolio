@@ -14,6 +14,7 @@
 **/*.db-wal
 **/checkpoints/
 **/data/indexes/
+artifacts/g3-agent-rag-ablation/indexes/
 
 # Local-only personal material; keep it organized but out of the public repo.
 docs/career/

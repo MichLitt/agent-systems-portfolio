@@ -24,6 +24,13 @@ Run the static preflight first:
 make check-ablation-protocol
 ```
 
-For a real run, an authorized operator must provide the selected LLM profile credential, start the RAG service with the fixed corpus, and retain the raw results. Use the task IDs from the manifest as repeated `--task-id` arguments with `coder_agent.cli.eval`, once per condition and seed. The baseline must pass `--experiment-config '{"knowledge_retrieval": false, "model_seed": 101}'`; the candidate must pass `--experiment-config '{"knowledge_retrieval": true, "rag_index_id": "g3-agent-rag-ablation-v1", "model_seed": 101}'` with `RAG_API_URL` and `RAG_API_TOKEN` configured. The fixed-index policy overrides any index identifier supplied by the model. Repeat for all three frozen seed values.
+Then build the fixed corpus; this writes ignored runtime artifacts and a
+machine-readable source/digest record under `artifacts/g3-agent-rag-ablation/`:
+
+```bash
+make build-g3-corpus
+```
+
+For a real run, an authorized operator must provide the selected LLM profile credential, start the RAG service with the built fixed corpus, and retain the raw results. Use the task IDs from the manifest as repeated `--task-id` arguments with `coder_agent.cli.eval`, once per condition and seed. The baseline must pass `--experiment-config '{"knowledge_retrieval": false, "model_seed": 101}'`; the candidate must pass `--experiment-config '{"knowledge_retrieval": true, "rag_index_id": "g3-agent-rag-ablation-v1", "model_seed": 101}'` with `RAG_API_URL` and `RAG_API_TOKEN` configured. The fixed-index policy overrides any index identifier supplied by the model. Repeat for all three frozen seed values.
 
 Before publishing, export raw run identifiers and recomputed metrics to `artifacts/evidence/agent-rag-ablation-latest.json`, write `docs/reports/agent-rag-ablation-v1.md`, create the EvalOps comparison and gate, then run `make require-evidence`. A rejected or neutral result remains valid evidence and must be recorded as such; it cannot be presented as an improvement.
