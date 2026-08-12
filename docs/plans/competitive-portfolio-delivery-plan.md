@@ -107,11 +107,7 @@ docker compose up
 
 #### G2.2 EvalOps Review Loop
 
-- 实现 bad-case list/detail API。
-- 实现 failure tag 写入与查询。
-- compare session 增加 per-case 视图。
-- 提供最小 Web UI：run list、run detail、compare、gate、bad-case tagging。
-- UI 只消费公开 API，不绕过服务层直接读数据库。
+- 已完成：bad-case 写入/查询、compare session 详情与列表 API，以及最小 Web UI（run list/detail、compare/gate 证据、bad-case tagging）。UI 只消费 `/v1` 公开 API。
 
 #### G2.3 RAG Ingestion Reliability
 
