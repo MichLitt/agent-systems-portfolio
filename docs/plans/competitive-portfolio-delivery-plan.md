@@ -100,6 +100,7 @@ docker compose up
 
 #### G2.1 一键环境与可观测性
 
+- 已实现（待 Docker runtime 验收）：顶层 Compose、Agent/RAG/EvalOps API 与 worker 服务、持久化 volumes、healthcheck、无外部模型的 demo seed，以及 operations runbook。
 - 为 Agent、RAG、EvalOps API、EvalOps Worker 提供容器配置。
 - 顶层 `compose.yaml` 包含 healthcheck、持久化 volume 和确定性 demo seed。
 - 增加 request/run correlation ID、结构化日志和启动失败诊断。

@@ -45,6 +45,19 @@ declared demo-ready or evidence-backed. Delivery is governed by explicit Gates:
 | G2 Demo-Ready Product | One-command stack, review UI, recoverable ingestion | Planned — minimum competitive resume threshold |
 | G3 Evidence-Backed Flagship | Controlled Agent baseline/candidate evaluation | Planned — required for quantified improvement claims |
 
+## Demo Stack
+
+With Docker Desktop installed, start the four-service demonstration and its
+offline seed data with:
+
+```bash
+docker compose --profile demo up --build
+```
+
+Then open the EvalOps review page at `http://localhost:8000/ui/`. The complete
+startup, recovery, security boundaries and reset procedure are in the
+[operations runbook](docs/engineering/OPERATIONS_RUNBOOK.md).
+
 See the
 [`competitive portfolio delivery plan`](./docs/plans/competitive-portfolio-delivery-plan.md)
 for the work breakdown, acceptance evidence, and allowed resume claims. Run the
