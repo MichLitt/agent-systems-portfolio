@@ -1,0 +1,68 @@
+name: G3 Formal Trial
+
+on:
+  workflow_dispatch:
+    inputs:
+      arm:
+        description: Frozen treatment arm to run
+        required: true
+        type: choice
+        options: [baseline, candidate]
+      seed:
+        description: Frozen model seed (must be one of run-config.json seeds)
+        required: true
+        type: choice
+        options: ['101', '202', '303']
+
+permissions:
+  contents: read
+
+jobs:
+  run-suite:
+    # A self-hosted runner is intentional: an interactive desktop session can
+    # reap the long-running model subprocess before it checkpoints a task.
+    runs-on: [self-hosted, g3-stable]
+    timeout-minutes: 90
+    environment: g3-formal-trial
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Build pinned environments and validate inputs
+        run: |
+          make refresh
+          make check-ablation-protocol
+          make build-g3-corpus
+
+      - name: Run frozen suite
+        env:
+          # Configure this protected-environment secret with the authorized
+          # GLM-5 credential. It is never printed or uploaded.
+          LLM_GLM_5_API_KEY: ${{ secrets.GLM_5_API_KEY }}
+        run: |
+          test -n "$LLM_GLM_5_API_KEY"
+          g3_token="$(python3 -c 'import secrets; print(secrets.token_urlsafe(24))')"
+          export RAG_API_TOKEN="$g3_token"
+          rag-benchmark-system/.venv/bin/python rag-benchmark-system/scripts/start_api.py \
+            --host 127.0.0.1 --port 18080 \
+            --data-dir artifacts/g3-agent-rag-ablation/indexes > /tmp/g3-rag.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            curl -fsS http://127.0.0.1:18080/v1/health && break
+            sleep 1
+          done
+          export RAG_API_URL=http://127.0.0.1:18080
+          make run-g3-ablation ARM=${{ inputs.arm }} SEED=${{ inputs.seed }}
+
+      - name: Upload raw suite checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g3-${{ inputs.arm }}-seed${{ inputs.seed }}-raw
+          path: artifacts/g3-agent-rag-ablation/runs/
+          if-no-files-found: warn
+          retention-days: 30
