@@ -42,4 +42,14 @@ The runner creates one Agent process per task and records a suite checkpoint aft
 
 Raw per-task trajectories, logs, and suite checkpoints are retained locally under `artifacts/g3-agent-rag-ablation/runs/` and intentionally ignored by Git. The final committed evidence artifact records their identifiers, source hashes, aggregate metrics, and gate result without publishing arbitrary model output.
 
+## Formal-run environment requirement
+
+The formal `trial_id` must execute on an environment that preserves the suite
+process through every task checkpoint (for example, a self-hosted CI runner or
+a dedicated machine/session manager). Interactive desktop tool sessions may
+reap detached child processes; such an interruption invalidates the affected
+trial rather than authorizing a selective rerun. Record the interruption, mint
+a new frozen trial ID, and restart both arms for all three seeds on a stable
+executor. The evidence builder intentionally refuses incomplete trials.
+
 Before publishing, export raw run identifiers and recomputed metrics to `artifacts/evidence/agent-rag-ablation-latest.json`, write `docs/reports/agent-rag-ablation-v1.md`, create the EvalOps comparison and gate, then run `make require-evidence`. A rejected or neutral result remains valid evidence and must be recorded as such; it cannot be presented as an improvement.

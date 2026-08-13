@@ -2,7 +2,7 @@
 
 更新时间：2026-08-12
 
-当前阶段：**G2 Demo-Ready Product 已完成（v0.2.0）；G3 Evidence-Backed Flagship 进行中（实验协议冻结，待授权真实运行）**
+当前阶段：**G2 Demo-Ready Product 已完成（v0.2.0）；G3 Evidence-Backed Flagship 进行中（协议、隔离执行器与证据链已就绪；待稳定执行环境完成正式三种子运行）**
 
 竞争力门槛：**G2 Demo-Ready Product**
 
