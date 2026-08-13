@@ -30,9 +30,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--arm", choices=("baseline", "candidate"), required=True)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument("--trial", default="formal-v1", help="Frozen trial identifier; different trials never share checkpoints.")
     parser.add_argument("--agent-preset", default="C3")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts" / "g3-agent-rag-ablation" / "runs")
-    parser.add_argument("--task-timeout-seconds", type=int, default=300)
+    parser.add_argument("--task-timeout-seconds", type=int, default=240)
     parser.add_argument("--resume", action="store_true", help="Skip task IDs already recorded in this suite checkpoint.")
     return parser.parse_args()
 
@@ -76,11 +77,18 @@ def main() -> int:
         raise SystemExit("invalid frozen task manifest")
     if args.seed not in config.get("seeds", []):
         raise SystemExit(f"seed {args.seed} is not in the frozen run configuration")
+    if args.trial != config.get("trial_id"):
+        raise SystemExit(f"trial must equal frozen config trial_id: {config.get('trial_id')!r}")
+    if args.task_timeout_seconds != config.get("external_task_timeout_seconds"):
+        raise SystemExit(
+            "task timeout must equal frozen config external_task_timeout_seconds: "
+            f"{config.get('external_task_timeout_seconds')!r}"
+        )
     if args.arm == "candidate":
         require_rag_service()
 
     arm_config = config[args.arm]
-    run_label = f"g3_{args.arm}_seed{args.seed}"
+    run_label = f"g3_{args.trial}_{args.arm}_seed{args.seed}"
     suite_dir = args.output / run_label
     suite_dir.mkdir(parents=True, exist_ok=True)
     checkpoint_path = suite_dir / "suite.json"
@@ -101,6 +109,10 @@ def main() -> int:
     completed = {entry["task_id"] for entry in checkpoint["task_results"]}
     if completed and not args.resume:
         raise SystemExit(f"checkpoint exists at {checkpoint_path}; rerun with --resume")
+    if checkpoint.get("task_timeout_seconds") != args.task_timeout_seconds:
+        raise SystemExit("checkpoint timeout does not match frozen task timeout")
+    if checkpoint.get("agent_preset") != args.agent_preset:
+        raise SystemExit("checkpoint preset does not match current preset")
 
     for index, task_id in enumerate(tasks, start=1):
         if task_id in completed:

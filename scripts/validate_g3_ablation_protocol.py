@@ -69,6 +69,12 @@ def main() -> None:
         fail("cannot resolve the Agent runtime commit")
     if resolved != runtime_commit:
         fail("Agent checkout does not match the frozen runtime commit")
+    trial_id = config.get("trial_id")
+    if not isinstance(trial_id, str) or not trial_id.strip():
+        fail("a non-empty formal trial_id is required")
+    external_timeout = config.get("external_task_timeout_seconds")
+    if not isinstance(external_timeout, int) or not 1 <= external_timeout <= 240:
+        fail("external task timeout must be an integer between 1 and 240 seconds")
     seeds = config.get("seeds")
     if not isinstance(seeds, list) or len(seeds) != 3 or len(set(seeds)) != 3:
         fail("exactly three distinct seeds are required")

@@ -15,6 +15,7 @@
 **/checkpoints/
 **/data/indexes/
 artifacts/g3-agent-rag-ablation/indexes/
+artifacts/g3-agent-rag-ablation/runs/
 
 # Local-only personal material; keep it organized but out of the public repo.
 docs/career/

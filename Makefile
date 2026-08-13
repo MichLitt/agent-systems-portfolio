@@ -23,7 +23,7 @@ build-g3-corpus:
 
 run-g3-ablation:
 	@test -n "$(ARM)" && test -n "$(SEED)" || (echo "Usage: make run-g3-ablation ARM=baseline|candidate SEED=101"; exit 2)
-	python3 scripts/run_g3_ablation.py --arm "$(ARM)" --seed "$(SEED)" --resume
+	python3 scripts/run_g3_ablation.py --arm "$(ARM)" --seed "$(SEED)" --trial "$(or $(TRIAL),formal-v1)" --resume
 
 refresh:
 	./scripts/refresh_workspace_after_move.sh
