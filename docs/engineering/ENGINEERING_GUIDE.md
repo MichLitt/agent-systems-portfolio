@@ -142,6 +142,9 @@ status and the current closure artifact are authoritative.
 - **G2 Demo-Ready Product** — reproducible stack, recoverable ingestion, review loop, operations/security evidence.
 - **G3 Evidence-Backed Flagship** — controlled baseline/candidate experiment and reproducible quantified evidence.
 
+For the formal G3 executor, secrets, raw-artifact retention, and gate sequence,
+see [G3 formal-run guide](G3_FORMAL_RUN_GUIDE.md).
+
 G2 is the minimum competitive resume threshold. G3 is mandatory for quality
 uplift claims. The readiness script checks machine-verifiable criteria; manual
 criteria remain authoritative in the delivery plan.
