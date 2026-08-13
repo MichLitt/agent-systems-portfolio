@@ -1,6 +1,6 @@
 {
   "schema_version": "agent-rag-ablation-config/v1",
-  "trial_id": "formal-v1",
+  "trial_id": "formal-v2",
   "task_manifest": "experiments/g3-agent-rag-ablation/task-manifest.json",
   "task_manifest_sha256": "eac5bcb0ad5961c91c51775b33919a6d266f9c9c09155fd32629ee527cf762f7",
   "agent_runtime_commit": "5887204e5692dde68c528727170460691269947c",
@@ -12,7 +12,7 @@
   "task_step_budget": "Use each task's max_steps from the pinned tasks.yaml source; the selected task set has a maximum of 20 steps.",
   "terminal_timeout_seconds": 30,
   "llm_request_timeout_seconds": 180,
-  "external_task_timeout_seconds": 240,
+  "external_task_timeout_seconds": 180,
   "retry_policy": "Record every attempt. Do not discard failures or rerun only successful tasks.",
   "baseline": {"label": "baseline_no_retrieval", "knowledge_retrieval": false},
   "candidate": {"label": "candidate_rag", "knowledge_retrieval": true, "index_name": "g3-agent-rag-ablation-v1", "rag_index_id": "g3-agent-rag-ablation-v1"},

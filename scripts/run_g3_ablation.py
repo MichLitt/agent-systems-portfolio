@@ -33,7 +33,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--trial", default="formal-v1", help="Frozen trial identifier; different trials never share checkpoints.")
     parser.add_argument("--agent-preset", default="C3")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts" / "g3-agent-rag-ablation" / "runs")
-    parser.add_argument("--task-timeout-seconds", type=int, default=240)
+    parser.add_argument("--task-timeout-seconds", type=int, default=None)
     parser.add_argument("--resume", action="store_true", help="Skip task IDs already recorded in this suite checkpoint.")
     return parser.parse_args()
 
@@ -66,12 +66,14 @@ def require_rag_service() -> None:
 
 def main() -> int:
     args = parse_args()
-    if args.task_timeout_seconds < 1:
-        raise SystemExit("--task-timeout-seconds must be positive")
     if not AGENT_PYTHON.is_file():
         raise SystemExit(f"Agent virtual environment is missing: {AGENT_PYTHON}")
     manifest = load_json(EXPERIMENT / "task-manifest.json")
     config = load_json(EXPERIMENT / "run-config.json")
+    if args.task_timeout_seconds is None:
+        args.task_timeout_seconds = config.get("external_task_timeout_seconds")
+    if not isinstance(args.task_timeout_seconds, int) or args.task_timeout_seconds < 1:
+        raise SystemExit("--task-timeout-seconds must be positive")
     tasks = manifest.get("task_ids")
     if not isinstance(tasks, list) or not all(isinstance(task, str) for task in tasks):
         raise SystemExit("invalid frozen task manifest")
