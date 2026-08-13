@@ -55,6 +55,7 @@ jobs:
             curl -fsS http://127.0.0.1:18080/v1/health && break
             sleep 1
           done
+          curl -fsS http://127.0.0.1:18080/v1/health
           export RAG_API_URL=http://127.0.0.1:18080
           make run-g3-ablation ARM=${{ inputs.arm }} SEED=${{ inputs.seed }}
 
