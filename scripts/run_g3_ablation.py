@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--arm", choices=("baseline", "candidate"), required=True)
     parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--trial", default="formal-v1", help="Frozen trial identifier; different trials never share checkpoints.")
+    parser.add_argument("--trial", default=None, help="Frozen trial identifier; defaults to run-config.json.")
     parser.add_argument("--agent-preset", default="C3")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts" / "g3-agent-rag-ablation" / "runs")
     parser.add_argument("--task-timeout-seconds", type=int, default=None)
@@ -70,6 +70,8 @@ def main() -> int:
         raise SystemExit(f"Agent virtual environment is missing: {AGENT_PYTHON}")
     manifest = load_json(EXPERIMENT / "task-manifest.json")
     config = load_json(EXPERIMENT / "run-config.json")
+    if args.trial is None:
+        args.trial = config.get("trial_id")
     if args.task_timeout_seconds is None:
         args.task_timeout_seconds = config.get("external_task_timeout_seconds")
     if not isinstance(args.task_timeout_seconds, int) or args.task_timeout_seconds < 1:
