@@ -1,4 +1,4 @@
-.PHONY: docs readiness require-release require-demo require-evidence refresh test finetune-smoke closure check check-ablation-protocol build-g3-corpus run-g3-ablation start-g3-ablation
+.PHONY: docs readiness require-release require-demo require-evidence refresh test finetune-smoke closure check check-ablation-protocol build-g3-corpus run-g3-ablation start-g3-ablation render-g3-report
 
 docs:
 	python3 scripts/check_workspace_docs.py
@@ -28,6 +28,9 @@ run-g3-ablation:
 start-g3-ablation:
 	@test -n "$(ARM)" && test -n "$(SEED)" || (echo "Usage: make start-g3-ablation ARM=baseline|candidate SEED=101"; exit 2)
 	python3 scripts/start_g3_ablation.py --arm "$(ARM)" --seed "$(SEED)"
+
+render-g3-report:
+	python3 scripts/render_g3_report.py
 
 refresh:
 	./scripts/refresh_workspace_after_move.sh
