@@ -48,14 +48,27 @@ jobs:
           test -n "$LLM_GLM_5_API_KEY"
           g3_token="$(python3 -c 'import secrets; print(secrets.token_urlsafe(24))')"
           export RAG_API_TOKEN="$g3_token"
-          rag-benchmark-system/.venv/bin/python rag-benchmark-system/scripts/start_api.py \
+          rag_log=/tmp/g3-rag.log
+          rag-benchmark-system/.venv/bin/python -u rag-benchmark-system/scripts/start_api.py \
             --host 127.0.0.1 --port 18080 \
-            --data-dir artifacts/g3-agent-rag-ablation/indexes > /tmp/g3-rag.log 2>&1 &
+            --data-dir artifacts/g3-agent-rag-ablation/indexes > "$rag_log" 2>&1 &
+          rag_pid=$!
           for attempt in $(seq 1 20); do
-            curl -fsS http://127.0.0.1:18080/v1/health && break
+            if curl -fsS http://127.0.0.1:18080/v1/health; then
+              break
+            fi
+            if ! kill -0 "$rag_pid" 2>/dev/null; then
+              echo "RAG API exited before becoming healthy (pid=$rag_pid)."
+              cat "$rag_log"
+              exit 1
+            fi
             sleep 1
           done
-          curl -fsS http://127.0.0.1:18080/v1/health
+          if ! curl -fsS http://127.0.0.1:18080/v1/health; then
+            echo "RAG API did not become healthy within 20 seconds (pid=$rag_pid)."
+            cat "$rag_log"
+            exit 1
+          fi
           export RAG_API_URL=http://127.0.0.1:18080
           make run-g3-ablation ARM=${{ inputs.arm }} SEED=${{ inputs.seed }}
 
