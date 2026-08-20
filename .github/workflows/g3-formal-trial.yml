@@ -53,7 +53,10 @@ jobs:
             --host 127.0.0.1 --port 18080 \
             --data-dir artifacts/g3-agent-rag-ablation/indexes > "$rag_log" 2>&1 &
           rag_pid=$!
-          for attempt in $(seq 1 20); do
+          # A fresh self-hosted runner may need longer for Python package
+          # imports on its first invocation; this does not affect the frozen
+          # experiment because the timer ends before any task is executed.
+          for attempt in $(seq 1 60); do
             if curl -fsS http://127.0.0.1:18080/v1/health; then
               break
             fi
