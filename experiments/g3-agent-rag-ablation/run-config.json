@@ -1,6 +1,6 @@
 {
   "schema_version": "agent-rag-ablation-config/v1",
-  "trial_id": "formal-v5",
+  "trial_id": "formal-v6",
   "task_manifest": "experiments/g3-agent-rag-ablation/task-manifest.json",
   "task_manifest_sha256": "eac5bcb0ad5961c91c51775b33919a6d266f9c9c09155fd32629ee527cf762f7",
   "agent_runtime_commit": "5887204e5692dde68c528727170460691269947c",

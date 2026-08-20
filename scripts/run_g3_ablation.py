@@ -51,6 +51,20 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def subprocess_output_text(value: str | bytes | None) -> str:
+    """Normalize subprocess output across Python versions and timeout paths.
+
+    ``subprocess.run(text=True)`` normally returns text, but Python 3.14 can
+    retain partial output as bytes in ``TimeoutExpired``.  A timeout is valid
+    G3 evidence and must be checkpointed rather than crash the suite runner.
+    """
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def require_rag_service() -> None:
     """Fail candidate execution before any paid model call if RAG is unavailable."""
     base_url = os.environ.get("RAG_API_URL", "").rstrip("/")
@@ -158,8 +172,8 @@ def main() -> int:
                 result["agent_result"] = {"success": False, "termination_reason": "agent_result_missing"}
         except subprocess.TimeoutExpired as exc:
             duration = time.monotonic() - started
-            (task_dir / "stdout.log").write_text(exc.stdout or "", encoding="utf-8")
-            (task_dir / "stderr.log").write_text(exc.stderr or "", encoding="utf-8")
+            (task_dir / "stdout.log").write_text(subprocess_output_text(exc.stdout), encoding="utf-8")
+            (task_dir / "stderr.log").write_text(subprocess_output_text(exc.stderr), encoding="utf-8")
             result = {
                 "task_id": task_id,
                 "duration_seconds": duration,
