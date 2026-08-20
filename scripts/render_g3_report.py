@@ -66,7 +66,7 @@ def main() -> int:
 - Baseline failure taxonomy: `{json.dumps(baseline['failure_taxonomy'], sort_keys=True)}`.
 - Candidate failure taxonomy: `{json.dumps(candidate['failure_taxonomy'], sort_keys=True)}`.
 - Retrieval hit and citation correctness are reported only when retrieval calls and citation annotations are observed; absent measurements are not imputed.
-- All figures are regenerated from retained suite checkpoints and Agent run-state records by `scripts/build_g3_evidence.py`; the EvalOps comparison and gate are recorded in `artifacts/evidence/agent-rag-ablation-latest.json`.
+- All figures are regenerated from retained suite checkpoints and task logs (using Agent run-state records when available) by `scripts/build_g3_evidence.py`; the EvalOps comparison and gate are recorded in `artifacts/evidence/agent-rag-ablation-latest.json`.
 """
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(content, encoding="utf-8")

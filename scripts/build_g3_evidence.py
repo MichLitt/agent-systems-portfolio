@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import re
 import sqlite3
 import statistics
 from typing import Any
@@ -69,6 +70,49 @@ def run_state_rows(run_ids: set[str]) -> tuple[dict[str, sqlite3.Row], list[sqli
         connection.close()
 
 
+_TOOL_CALL_LINE = re.compile(r"^\s{2}>\s+([a-z_][a-z0-9_]*)\(")
+
+
+def raw_log_tool_calls(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Recover tool evidence from retained task logs when runner state is absent.
+
+    GitHub workflow artifacts contain every task's stdout but intentionally do
+    not contain the runner-local SQLite database.  The log format records each
+    tool invocation and its result, so it remains an auditable source for
+    aggregate tool and retrieval metrics.
+    """
+    calls: list[dict[str, Any]] = []
+    for entry in entries:
+        stdout_path = entry.get("stdout_path")
+        if not isinstance(stdout_path, str):
+            continue
+        path = ROOT / stdout_path
+        if not path.is_file():
+            continue
+        active: dict[str, Any] | None = None
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            match = _TOOL_CALL_LINE.match(line)
+            if match:
+                if active is not None:
+                    calls.append(active)
+                active = {"tool_name": match.group(1), "is_error": None, "result_text": ""}
+                continue
+            if active is None:
+                continue
+            stripped = line.strip()
+            if stripped.startswith("ok:"):
+                active["is_error"] = False
+                active["result_text"] += stripped[3:].strip() + "\n"
+            elif stripped.startswith(("error:", "failed:")):
+                active["is_error"] = True
+                active["result_text"] += stripped + "\n"
+            elif active["result_text"]:
+                active["result_text"] += stripped + "\n"
+        if active is not None:
+            calls.append(active)
+    return calls
+
+
 def suite(trial: str, arm: str, seed: int, task_ids: list[str]) -> dict[str, Any]:
     path = RUNS / f"g3_{trial}_{arm}_seed{seed}" / "suite.json"
     if not path.is_file():
@@ -89,14 +133,18 @@ def summarize(arm: str, suites: list[dict[str, Any]], source_documents: set[str]
         for result in agent_results
         if isinstance(result, dict) and result.get("activation_counters", {}).get("run_id")
     }
-    states, calls = run_state_rows(set(run_ids))
+    states, state_calls = run_state_rows(set(run_ids))
+    calls: list[Any] = state_calls if state_calls else raw_log_tool_calls(entries)
     successes = sum(bool(result.get("benchmark_passed")) for result in agent_results if isinstance(result, dict))
     durations_ms = [float(entry["duration_seconds"]) * 1000 for entry in entries]
     steps = sum(int(result.get("steps_used", 0) or 0) for result in agent_results if isinstance(result, dict))
     retry_steps = sum(int(result.get("retry_steps", 0) or 0) for result in agent_results if isinstance(result, dict))
     tokens = sum(int(result.get("total_tokens", 0) or 0) for result in agent_results if isinstance(result, dict))
     total_calls = len(calls)
-    successful_calls = sum(not bool(call["is_error"]) for call in calls)
+    successful_calls = sum(
+        call["is_error"] is not None and not bool(call["is_error"])
+        for call in calls
+    )
     failure_taxonomy: dict[str, int] = {}
     for result in agent_results:
         reason = str(result.get("termination_reason") or "external_task_timeout")

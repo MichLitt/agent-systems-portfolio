@@ -55,7 +55,10 @@ def main() -> int:
             "git_commit": evidence["agent_runtime_commit"],
             "total_steps": metric["total_steps"], "total_tool_calls": metric["total_tool_calls"],
             "tool_success_rate": metric["tool_success_rate"], "total_tokens": metric["token_usage"],
-            "wall_duration_ms": metric["wall_duration_total_ms"],
+            # EvalOps agent/v1 owns this field as an integer millisecond count.
+            # The evidence aggregator retains fractional milliseconds so it can
+            # compute percentiles without premature rounding.
+            "wall_duration_ms": int(round(metric["wall_duration_total_ms"])),
             "verification_pass_rate": metric["verification_pass_rate"],
             "tool_retry_rate": metric["tool_retry_rate"], "retrieval_hit_rate": metric["retrieval_hit_rate"],
             "citation_correctness_rate": metric["citation_correctness_rate"],
