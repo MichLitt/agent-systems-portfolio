@@ -43,7 +43,7 @@ declared demo-ready or evidence-backed. Delivery is governed by explicit Gates:
 | G0 Engineering Closure | Tests and real local Agent/RAG/EvalOps closure | **Ready** |
 | G1 Release Baseline | Child changes merged to `main`, full CI, release tag | **Ready — v0.1.0** |
 | G2 Demo-Ready Product | One-command stack, review UI, recoverable ingestion | **Ready — v0.2.0** |
-| G3 Evidence-Backed Flagship | Controlled Agent baseline/candidate evaluation | Planned — required for quantified improvement claims |
+| G3 Evidence-Backed Flagship | Controlled Agent baseline/candidate evaluation | **Ready — formal evidence published; v0.3.0 release pending** |
 
 ## Demo Stack
 
@@ -67,6 +67,11 @@ local readiness assessor at any time:
 ```bash
 make readiness
 ```
+
+The G3 baseline/candidate evaluation covers 20 fixed repository tasks across
+three seeds per arm. Its gated result, raw-suite hashes, failure taxonomy and
+limitations are recorded in the [G3 report](docs/reports/agent-rag-ablation-v1.md)
+and companion [evidence artifact](artifacts/evidence/agent-rag-ablation-latest.json).
 
 ## Quick Verification
 

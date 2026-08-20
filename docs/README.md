@@ -21,6 +21,8 @@ must not be used as technical sources of truth.
 ## Verification Evidence
 
 - [`../artifacts/closure/three-project-closure-latest.json`](../artifacts/closure/three-project-closure-latest.json)
+- [`../artifacts/evidence/agent-rag-ablation-latest.json`](../artifacts/evidence/agent-rag-ablation-latest.json) — gated G3 Agent/RAG comparison.
+- [`reports/agent-rag-ablation-v1.md`](./reports/agent-rag-ablation-v1.md) — G3 result, failure observations, and limitations.
 
 Project-local reports remain under each project's `report/` or `docs/`
 directory because their baselines and implementation details have a single

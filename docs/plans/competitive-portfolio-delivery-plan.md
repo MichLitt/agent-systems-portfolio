@@ -1,8 +1,8 @@
 # Agent Systems Portfolio 阶段性交付计划
 
-更新时间：2026-08-12
+更新时间：2026-08-20
 
-当前阶段：**G2 Demo-Ready Product 已完成（v0.2.0）；G3 Evidence-Backed Flagship 进行中（协议、隔离执行器与证据链已就绪；待稳定执行环境完成正式三种子运行）**
+当前阶段：**G3 Evidence-Backed Flagship 已完成；待以 v0.3.0 发布标签固化当前证据提交。**
 
 竞争力门槛：**G2 Demo-Ready Product**
 
@@ -44,7 +44,7 @@ Finetune 是可选研究扩展，不阻塞核心 Agent 平台达到 G2/G3。
 | G0 Engineering Closure | 三核心项目测试和真实 HTTP 闭环通过 | 可描述“built/integrated”，不可称 production-ready | **Ready** |
 | G1 Release Baseline | 改动进入各自 `main`；全仓 CI；Submodule 固定 main；release tag/notes | 可作为公开工程项目列出 | **Ready** |
 | G2 Demo-Ready Product | 一键启动；seeded demo；EvalOps review loop；RAG job 可恢复；基础安全与运行手册 | **达到有竞争力项目的最低门槛** | **Ready — v0.2.0** |
-| G3 Evidence-Backed Flagship | 固定任务集上完成 Agent baseline vs RAG candidate；质量/成本/延迟可比较；gate 和报告可复现 | 可写量化提升、作为旗舰项目展开 | **In progress — protocol frozen** |
+| G3 Evidence-Backed Flagship | 固定任务集上完成 Agent baseline vs RAG candidate；质量/成本/延迟可比较；gate 和报告可复现 | 可写量化提升、作为旗舰项目展开 | **Ready — 20 tasks × 3 seeds per arm; EvalOps promoted** |
 | G4 Post-Training Extension | 数据、污染报告、baseline、SFT/DPO 和 `finetune/v1` 全部有 artifact | 可增加模型训练亮点，不阻塞主线 | Optional |
 
 阶段必须顺序晋级。未满足前置 Gate 时，不得仅凭局部功能宣称更高阶段完成。
@@ -196,6 +196,13 @@ docker compose up
 - required gate 为 `promoted`；否则诚实记录 rejected，不写提升 claim。
 - 至少包含一个负面或无提升结果，说明不是 cherry-pick 展示。
 - `python3 scripts/check_delivery_readiness.py --require evidence` 通过。
+
+### G3 完成记录（2026-08-20）
+
+- 正式运行：baseline 与 candidate 各 3 个 seed、每个 seed 固定 20 个任务，共 120 个 task observations；原始 GitHub Actions artifacts 保留 30 天。
+- 结果：verification pass rate 从 46/60（76.7%）提升至 50/60（83.3%），即 +6.7 percentage points。
+- EvalOps compare/gate：`promoted`；原始 suite SHA、任务集哈希、语料清单哈希和失败分类已写入 `artifacts/evidence/agent-rag-ablation-latest.json`。
+- 限制：候选组只观察到 4 次检索调用（2 次成功返回），因此结论限于该冻结配置的受控表现提升，不扩大为强检索因果主张。
 
 ### G3 简历表达模板
 
