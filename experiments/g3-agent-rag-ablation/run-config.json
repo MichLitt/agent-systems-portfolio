@@ -1,11 +1,11 @@
 {
   "schema_version": "agent-rag-ablation-config/v1",
-  "trial_id": "formal-v3",
+  "trial_id": "formal-v4",
   "task_manifest": "experiments/g3-agent-rag-ablation/task-manifest.json",
   "task_manifest_sha256": "eac5bcb0ad5961c91c51775b33919a6d266f9c9c09155fd32629ee527cf762f7",
   "agent_runtime_commit": "5887204e5692dde68c528727170460691269947c",
   "rag_corpus_manifest": "experiments/g3-agent-rag-ablation/rag-corpus-manifest.json",
-  "rag_corpus_manifest_sha256": "625b55c3784e7ce10d638dd55bcb86eb4d1a4e5cc4dd56078440b4d8ca821133",
+  "rag_corpus_manifest_sha256": "8a275891d4fc8b06e743188adcc27aa8e256d07f5902118789032c2575eba907",
   "seeds": [101, 202, 303],
   "llm_profile": "glm_5",
   "temperature": 0.2,

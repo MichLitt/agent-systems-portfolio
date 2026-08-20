@@ -3,7 +3,7 @@
   "index_name": "g3-agent-rag-ablation-v1",
   "builder": {
     "repository": "rag-benchmark-system",
-    "commit": "0f409635938ffc3bb6b8767206187a1530800cf4",
+    "commit": "93eaa2ae8835e2839800b052f6c022be2766f615",
     "command": "scripts/build_text_index.py",
     "chunk_size": 256,
     "overlap": 32
