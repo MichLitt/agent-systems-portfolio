@@ -129,6 +129,8 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
 
 ### WP2 — 权限策略层与安全红队评测（3–4 天，主要是离线）
 
+状态（2026-10-27）：第一切片本地完成（未提交）：策略层 + secret 环境变量清洗 + 污点标记 + AgentSecBench L1（`workspace-write` 拦截 76/80、良性误拦 2/40；`legacy` 10/80）。用例与策略同期自撰，只作回归基准。默认仍为 `legacy`。待办：Custom-40 可用性代价、`glm_5` 端到端注入 lane、留出用例、CLI 审批、沙箱后端。见 Agent [`IMPROVEMENT_REPORT_v0.8.0-tool-policy.md`](../../llm-coding-agent-system/report/IMPROVEMENT_REPORT_v0.8.0-tool-policy.md)。
+
 先建拦截能力，再测拦截率：
 
 - **Permission 模式**：`read-only` / `workspace-write` / `full`，外加按工具、按参数模式配置的 `allow` / `ask` / `deny` 规则。每次判定的 `decision` 和 `rule_id` 写入 `tool_calls` 审计。
