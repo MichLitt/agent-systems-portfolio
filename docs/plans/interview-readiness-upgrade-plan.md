@@ -160,6 +160,8 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
 
 ### WP3 — Runtime 硬化（2 天，无 API 成本）
 
+状态（2026-10-27）：本地完成；实现选择了"步边界历史快照"而非下文设想的 append-only `run_messages` 表（历史会被截断/压缩原地修改，快照恢复更简单），并新增 restart 恢复模式；崩溃注入 50/50 通过。见 Agent [`IMPROVEMENT_REPORT_v0.8.0-run-recovery.md`](../../llm-coding-agent-system/report/IMPROVEMENT_REPORT_v0.8.0-run-recovery.md)。未提交。
+
 目标：让“检查点存什么、怎么序列化、并发怎么处理”这三个问题都有经得起深挖的答案。
 
 - **精确恢复**：新增 append-only 的 `run_messages` 表（`run_id`、`seq`、`role`、`content_json`、`tool_calls_json`、`usage_json`、`schema_version`）。每步额外记录工作区指纹（`git` tree hash）。恢复时按 message log 精确重建 history；指纹不一致时告警，并回退到现有的摘要式恢复。

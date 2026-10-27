@@ -28,9 +28,9 @@ flowchart LR
 
 | Project | Role | Current state |
 |---|---|---|
-| [`llm-coding-agent-system`](./llm-coding-agent-system/) | Persistent Agent Runtime, tool execution, verification, resume/retry, knowledge tool | Integrated; 275 tests passing |
-| [`rag-benchmark-system`](./rag-benchmark-system/) | PDF/OCR ingestion, BM25/FAISS retrieval API, citation/NLI evaluation | Integrated; 415 tests passing, 1 optional skip |
-| [`llm-evalops-platform`](./llm-evalops-platform/) | Versioned ingest, normalization worker, run comparison, release gate | Integrated; 45 tests passing |
+| [`llm-coding-agent-system`](./llm-coding-agent-system/) | Persistent Agent Runtime, tool execution, verification, resume/retry, knowledge tool | Integrated; 350 tests passing |
+| [`rag-benchmark-system`](./rag-benchmark-system/) | PDF/OCR ingestion, BM25/FAISS retrieval API, citation/NLI evaluation | Integrated; 423 tests passing, 1 optional skip |
+| [`llm-evalops-platform`](./llm-evalops-platform/) | Versioned ingest, normalization worker, run comparison, release gate | Integrated; 53 tests passing |
 | [`coding-llm-finetune`](./coding-llm-finetune/) | Failure-driven SFT/DPO pipeline and clean evaluation | Extension; pipeline prepared, training pending |
 
 ## Delivery Status
