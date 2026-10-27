@@ -72,6 +72,10 @@ The G3 baseline/candidate evaluation covers 20 fixed repository tasks across
 three seeds per arm. Its gated result, raw-suite hashes, failure taxonomy and
 limitations are recorded in the [G3 report](docs/reports/agent-rag-ablation-v1.md)
 and companion [evidence artifact](artifacts/evidence/agent-rag-ablation-latest.json).
+An [erratum](docs/reports/agent-rag-ablation-v1-erratum.md) governs how that
+report is read: its token figures were not measured, and the pass-rate
+difference (46/60 → 50/60, Fisher p ≈ 0.49) is not attributable to retrieved
+content.
 
 ## Quick Verification
 

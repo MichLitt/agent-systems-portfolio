@@ -125,6 +125,26 @@ def suite(trial: str, arm: str, seed: int, task_ids: list[str]) -> dict[str, Any
     return {"path": path, "sha256": sha256(path), "value": value}
 
 
+def usage_summary(agent_results: list[Any]) -> tuple[int | None, str, float | None]:
+    """Aggregate provider-reported usage from Agent result ``usage`` fields.
+
+    Results without a ``usage`` dict (pre-accounting runs, or tasks killed by
+    the external timeout) contribute nothing; their legacy ``total_tokens`` is a
+    prompt-size estimate and is never summed.
+    """
+    usages = [result.get("usage") if isinstance(result, dict) else None for result in agent_results]
+    reported = [usage for usage in usages if isinstance(usage, dict) and usage.get("total_tokens") is not None]
+    if not reported:
+        return None, "unavailable", None
+    complete = len(reported) == len(usages) and all(
+        usage.get("token_usage_status") == "provider" for usage in reported
+    )
+    tokens = sum(int(usage["total_tokens"]) for usage in reported)
+    costs = [usage.get("estimated_cost_usd") for usage in reported]
+    cost = round(sum(costs), 6) if complete and all(value is not None for value in costs) else None
+    return tokens, "provider" if complete else "partial", cost
+
+
 def summarize(arm: str, suites: list[dict[str, Any]], source_documents: set[str]) -> dict[str, Any]:
     entries = [entry for suite_data in suites for entry in suite_data["value"]["task_results"]]
     agent_results = [entry.get("agent_result", {}) for entry in entries]
@@ -139,7 +159,7 @@ def summarize(arm: str, suites: list[dict[str, Any]], source_documents: set[str]
     durations_ms = [float(entry["duration_seconds"]) * 1000 for entry in entries]
     steps = sum(int(result.get("steps_used", 0) or 0) for result in agent_results if isinstance(result, dict))
     retry_steps = sum(int(result.get("retry_steps", 0) or 0) for result in agent_results if isinstance(result, dict))
-    tokens = sum(int(result.get("total_tokens", 0) or 0) for result in agent_results if isinstance(result, dict))
+    tokens, token_usage_status, estimated_cost_usd = usage_summary(agent_results)
     total_calls = len(calls)
     successful_calls = sum(
         call["is_error"] is not None and not bool(call["is_error"])
@@ -183,7 +203,8 @@ def summarize(arm: str, suites: list[dict[str, Any]], source_documents: set[str]
             "wall_latency_p95_ms": percentile(durations_ms, 0.95),
             "wall_duration_total_ms": sum(durations_ms),
             "token_usage": tokens,
-            "estimated_cost_usd": None,
+            "token_usage_status": token_usage_status,
+            "estimated_cost_usd": estimated_cost_usd,
             "retrieval_call_count": len(retrieval_calls),
             "retrieval_hit_rate": finite_ratio(len(hits), len(retrieval_calls)),
             "citation_correctness_rate": None,

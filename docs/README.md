@@ -11,6 +11,7 @@
 - [`roadmap/portfolio-roadmap.md`](./roadmap/portfolio-roadmap.md) — long-term portfolio direction across Agent, EvalOps, RAG, and post-training.
 - [`plans/competitive-portfolio-delivery-plan.md`](./plans/competitive-portfolio-delivery-plan.md) — active staged plan and evidence requirements for a competitive resume project.
 - [`plans/three-project-closure-plan.md`](./plans/three-project-closure-plan.md) — completed plan for the Agent/RAG/EvalOps loop.
+- [`plans/interview-readiness-upgrade-plan.md`](./plans/interview-readiness-upgrade-plan.md) — evidence-integrity fixes, public-benchmark ablation, security and runtime hardening for interview readiness.
 
 ## Career Material
 
@@ -23,6 +24,7 @@ must not be used as technical sources of truth.
 - [`../artifacts/closure/three-project-closure-latest.json`](../artifacts/closure/three-project-closure-latest.json)
 - [`../artifacts/evidence/agent-rag-ablation-latest.json`](../artifacts/evidence/agent-rag-ablation-latest.json) — gated G3 Agent/RAG comparison.
 - [`reports/agent-rag-ablation-v1.md`](./reports/agent-rag-ablation-v1.md) — G3 result, failure observations, and limitations.
+- [`reports/agent-rag-ablation-v1-erratum.md`](./reports/agent-rag-ablation-v1-erratum.md) — corrections to the G3 report: unmeasured token usage, retrieval attribution, timeout saturation.
 
 Project-local reports remain under each project's `report/` or `docs/`
 directory because their baselines and implementation details have a single

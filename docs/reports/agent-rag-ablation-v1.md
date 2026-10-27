@@ -4,6 +4,10 @@
 
 **EvalOps decision: `promoted`.** The candidate met the predeclared non-regression gate.
 
+> **Erratum (2026-10-27):** the token-usage figures are not provider usage, and the
+> pass-rate difference cannot be attributed to retrieved content. See the
+> [erratum](agent-rag-ablation-v1-erratum.md) before citing any number from this report.
+
 ## Frozen design
 
 - Task observations: 20 tasks × 3 seeds per arm.
@@ -20,7 +24,7 @@
 | Tool retry rate | 14.8% | 7.9% | — |
 | p50 wall latency | 71,543.9 ms | 61,878.6 ms | — |
 | p95 wall latency | 180,011.1 ms | 180,011.2 ms | — |
-| Token usage | 50,999 | 51,994 | — |
+| Token usage | invalid (see erratum) | invalid (see erratum) | — |
 
 ## Failure observations and limitations
 

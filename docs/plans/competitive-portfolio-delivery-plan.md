@@ -203,10 +203,13 @@ docker compose up
 - 结果：verification pass rate 从 46/60（76.7%）提升至 50/60（83.3%），即 +6.7 percentage points。
 - EvalOps compare/gate：`promoted`；原始 suite SHA、任务集哈希、语料清单哈希和失败分类已写入 `artifacts/evidence/agent-rag-ablation-latest.json`。
 - 限制：候选组只观察到 4 次检索调用（2 次成功返回），因此结论限于该冻结配置的受控表现提升，不扩大为强检索因果主张。
+- 勘误（2026-10-27）：token 指标并非实测用量；+6.7 pp 在统计上与噪声不可区分（Fisher p≈0.49），且最多 2 次运行获得检索内容，不能归因于检索。判读口径以 [`agent-rag-ablation-v1-erratum.md`](../reports/agent-rag-ablation-v1-erratum.md) 为准。
 
 ### G3 简历表达模板
 
 只有数值与 artifact 一致时，才能替换占位符：
+
+> 勘误后：现有 G3 证据不支持下句中“by integrating … retrieval”带来提升的因果表述，在新的受控实验支持前不得使用。
 
 > Improved repository-task verification pass rate from **X% to Y%** across **N tasks / S seeds** by integrating provenance-aware document retrieval into a resumable coding-agent runtime, while holding model and execution budgets constant; automated comparison and promotion through versioned EvalOps release gates.
 

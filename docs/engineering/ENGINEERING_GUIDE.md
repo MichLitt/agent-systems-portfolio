@@ -68,8 +68,12 @@ registry discovery must use the same `--data-dir` root.
 
 ### 3.2 EvalOps Producer Schemas
 
-`agent/v1` carries run type/status, steps, tool calls, tool success, tokens,
-wall duration, preset/profile, and eval task metadata. Eval task set identity
+`agent/v1` carries run type/status, steps, tool calls, tool success,
+provider-reported token usage (`total_tokens`, `input_tokens`,
+`output_tokens`, `llm_call_count`, `token_usage_status`, optional
+`estimated_cost_usd`), wall duration, preset/profile, and eval task metadata.
+Token fields are `null` when the provider reported no usage; producers never
+substitute a client-side estimate. Eval task set identity
 is a stable hash of benchmark name and sorted task IDs. Service runs have no
 task set and cannot be compared.
 

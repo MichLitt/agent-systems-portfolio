@@ -43,6 +43,10 @@ def main() -> int:
 
 **EvalOps decision: `{decision}`.** {conclusion}
 
+> **Erratum (2026-10-27):** the token-usage figures are not provider usage, and the
+> pass-rate difference cannot be attributed to retrieved content. See the
+> [erratum](agent-rag-ablation-v1-erratum.md) before citing any number from this report.
+
 ## Frozen design
 
 - Task observations: {evidence['task_count']} tasks × {evidence['seed_count']} seeds per arm.
@@ -59,7 +63,7 @@ def main() -> int:
 | Tool retry rate | {pct(baseline['tool_retry_rate'])} | {pct(candidate['tool_retry_rate'])} | — |
 | p50 wall latency | {number(baseline['wall_latency_p50_ms'])} ms | {number(candidate['wall_latency_p50_ms'])} ms | — |
 | p95 wall latency | {number(baseline['wall_latency_p95_ms'])} ms | {number(candidate['wall_latency_p95_ms'])} ms | — |
-| Token usage | {number(baseline['token_usage'], 0)} | {number(candidate['token_usage'], 0)} | — |
+| Token usage | invalid (see erratum) | invalid (see erratum) | — |
 
 ## Failure observations and limitations
 
