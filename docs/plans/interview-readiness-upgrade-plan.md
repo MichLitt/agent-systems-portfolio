@@ -95,6 +95,17 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
 
 ### WP1 — 公开基准扩样与预注册对照（5–7 天 + API 费用）
 
+状态（2026-10-28）：
+
+- **已就绪**：容器后端、官方镜像运行器、一键汇总和 mini-SWE-agent 参照组。这些都已在 WSL 上用 pilot 跑通（10 题：A 组 7/10，修复后 6/10；R 组 8/10。样本太小，不作结论）。
+- **预注册已定**：
+  - 模型用 `glm_5_nothink`。
+  - 第 6 节选方案 1：**不设验证门组 B**，主结果为 A 组绝对解决率，以 R 组作参照。下文实验设计里的 B 组和“验证门”主假设作废。原因是旧验证门用的就是评分测试，而且 v0.6.0 起 C3 和 C6 完全相同。
+- **花费上限已定**：A-s101 先跑 25 题，按此推算整场超过 4500 万输入或 100 万输出 token 就停下重新评估。由 `scripts/wp1_formal.sh` 自动执行。
+- **预注册已冻结**：2026-10-28，冻结提交为 Agent `ad4964e`；此后的改动只能以修订（amendment）形式追加。正式实验在 WSL 上运行 `scripts/wp1_formal.sh`，脚本会先检查预注册确已冻结。
+
+见 Agent [`PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md`](../../llm-coding-agent-system/report/PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md)与 [`WP1_PILOT_2026-10-28.md`](../../llm-coding-agent-system/report/WP1_PILOT_2026-10-28.md)。
+
 先修正外部建议：
 
 - **基准选择**：建议用 **SWE-bench Verified**，以固定随机种子抽 100 题。它是 500 题人工验证集，是业界通用口径，公开 agent 也多在这上面报结果。如果坚持用 Lite，就从 300 题中同法抽 100 题。
@@ -129,7 +140,7 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
 
 ### WP2 — 权限策略层与安全红队评测（3–4 天，主要是离线）
 
-状态（2026-10-27）：第一切片本地完成（未提交）：策略层 + secret 环境变量清洗 + 污点标记 + AgentSecBench L1（`workspace-write` 拦截 76/80、良性误拦 2/40；`legacy` 10/80）。用例与策略同期自撰，只作回归基准。默认仍为 `legacy`。待办：Custom-40 可用性代价、`glm_5` 端到端注入 lane、留出用例、CLI 审批、沙箱后端。见 Agent [`IMPROVEMENT_REPORT_v0.8.0-tool-policy.md`](../../llm-coding-agent-system/report/IMPROVEMENT_REPORT_v0.8.0-tool-policy.md)。
+状态（2026-10-27）：第一切片本地完成（未提交）：策略层 + secret 环境变量清洗 + 污点标记 + AgentSecBench L1（`workspace-write` 拦截 76/80、良性误拦 2/40；`legacy` 10/80）。用例与策略同期自撰，只作回归基准。默认仍为 `legacy`。Custom-40 可用性代价已测（`workspace-write` 33/40 对 `legacy` 32/40，整轮只拦截 1 次，未见代价）。待办：`glm_5` 端到端注入 lane、留出用例、CLI 审批、沙箱后端。见 Agent [`IMPROVEMENT_REPORT_v0.8.0-tool-policy.md`](../../llm-coding-agent-system/report/IMPROVEMENT_REPORT_v0.8.0-tool-policy.md)。
 
 先建拦截能力，再测拦截率：
 
