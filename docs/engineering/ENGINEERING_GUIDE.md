@@ -77,6 +77,12 @@ substitute a client-side estimate. Eval task set identity
 is a stable hash of benchmark name and sorted task IDs. Service runs have no
 task set and cannot be compared.
 
+`agent/v1` can also carry one aggregate report per evaluation arm, such as
+the G3 arms and the WP1 SWE-bench Verified arms. Aggregates may add
+controlled-evaluation metrics. For a benchmark graded by an official harness,
+that includes `resolved_rate` (0–1). `wall_duration_ms` is `null` for an arm
+whose runs were not timed, such as the mini-SWE-agent reference arm.
+
 `rag/v1` carries dataset, retrieval/generator configuration, QA metrics,
 faithfulness/hallucination, latency, cost, and retrieval trace extras. Dataset
 is the comparison task set.
