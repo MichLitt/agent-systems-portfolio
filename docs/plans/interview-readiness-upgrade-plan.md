@@ -102,9 +102,18 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
   - 模型用 `glm_5_nothink`。
   - 第 6 节选方案 1：**不设验证门组 B**，主结果为 A 组绝对解决率，以 R 组作参照。下文实验设计里的 B 组和“验证门”主假设作废。原因是旧验证门用的就是评分测试，而且 v0.6.0 起 C3 和 C6 完全相同。
 - **花费上限已定**：A-s101 先跑 25 题，按此推算整场超过 4500 万输入或 100 万输出 token 就停下重新评估。由 `scripts/wp1_formal.sh` 自动执行。
-- **预注册已冻结**：2026-10-28，冻结提交为 Agent `ad4964e`；此后的改动只能以修订（amendment）形式追加。正式实验在 WSL 上运行 `scripts/wp1_formal.sh`，脚本会先检查预注册确已冻结。
+- **预注册已冻结**：2026-10-28，冻结提交为 Agent `ad4964e`；此后的改动只能以修订（amendment）形式追加。
+- **正式实验已完成**（2026-10-28，WSL 主机）：100 道 SWE-bench Verified（种子 20261028，不含 pilot 题），官方实例镜像，评分用未改动的 harness。
+  - 主结果：A 组种子 101 解决 64/100，种子 202 解决 59/100，两个种子都解决 52/100。
+  - 参照：R 组（mini-SWE-agent 2.4.6，同模型、同设置、同步数上限）解决 70/100。
+  - 预注册的配对比较（A-s101 对 R）：−6 个百分点，McNemar p = 0.24，未检出显著差异，点估计偏向 R。
+  - 探索性（事后分析）：只有 R 解决的题，绝大多数在 A 组是被重试保护终止的（对 s101 是 12 道中 11 道，对 s202 是 19 道中 16 道）。重试保护是下一轮改进的首要候选，需要单独预注册对照。
+- **两条修订**：
+  - 修订 1：输出上限从 100 万提到 200 万。检查点推算整场 106 万；实际整场只用了 88 万输出、2941 万输入。
+  - 修订 2：R 组有 16 道题因 GLM 5 小时额度限流（429，1308）失败，按 §5 和 §7 用相同设置重跑一次。第一次是 61/100，重跑的 16 道中有 9 道解决。
+- **尚未完成**：预注册 §8 要求的每组 EvalOps `agent/v1` 汇总报告。
 
-见 Agent [`PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md`](../../llm-coding-agent-system/report/PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md)与 [`WP1_PILOT_2026-10-28.md`](../../llm-coding-agent-system/report/WP1_PILOT_2026-10-28.md)。
+见 Agent [`PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md`](../../llm-coding-agent-system/report/PREREG_WP1_SWEBENCH_VERIFIED_DRAFT.md)、[`WP1_PILOT_2026-10-28.md`](../../llm-coding-agent-system/report/WP1_PILOT_2026-10-28.md)与结果报告 [`WP1_RESULTS_2026-10-28.md`](../../llm-coding-agent-system/report/WP1_RESULTS_2026-10-28.md)；证据在 [`artifacts/wp1-formal/`](../../llm-coding-agent-system/artifacts/wp1-formal/)。
 
 先修正外部建议：
 
@@ -256,7 +265,7 @@ Gate 影响：**不改变 G0–G3 状态**。本计划是 G3 之后的质量与�
 
 各工作包验收后可新增的表述（占位符必须与 artifact 一致）：
 
-- WP1：“On a fixed random 100-task SWE-bench Verified subset with official Docker grading, resolved **X%** vs **Y%** for mini-SWE-agent under the same model and budget; a pre-registered verification-gate ablation showed **Δ pp (McNemar p=…)**.”
+- WP1（数字已由 Agent `artifacts/wp1-formal/` 支撑；验证门对照已按预注册 §6 取消，不可再写）：“On a fixed random 100-instance SWE-bench Verified subset with official instance images and the unmodified harness, the agent resolved **64% and 59%** across two seeds (**52%** in both) versus **70%** for mini-SWE-agent under the same model (GLM-5.1, thinking off) and step limit; the pre-registered paired comparison found no significant difference (**−6 pp, McNemar p = 0.24**).” 不能写成“持平”或“优于”。
 - WP2：“Replaced a substring denylist with an AST-based tool-call policy layer and container sandbox; reduced attack success on an 80-case red-team suite from **A%** to **B%** at **C%** benign false-positive rate and **D pp** utility cost.”
 - WP3：“Event-sourced checkpointing with exact resume, validated by **50/50** crash-injection recoveries.”
 
